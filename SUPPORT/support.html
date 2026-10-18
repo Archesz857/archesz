@@ -1,1 +1,35 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCHESZ STORE — Support Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/style.css">
+<script src="../SCRIPTJS/script.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <header class="shop-header">
+    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
+    <h1>Support Center</h1>
+    <p>Chat with our team about your order</p>
+  </header>
+  <div class="panel-card chat-panel">
+    <div class="chat-top"><span class="vip-badge"><span class="dot"></span> LIVE ADMIN</span><small id="who"></small></div>
+    <p class="warn-note" id="regHint" hidden>You are not registered yet. <a href="../AUTH/login.html" style="color:#22d3ee">Register</a> so admin can see your Gmail.</p>
+    <p class="field-label" style="color:#fff;font-weight:600;font-size:16px;margin-bottom:10px">What is your problem about order?</p>
+    <select id="orderSel" class="sel"></select>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="attach-chip" id="attachChip" hidden></div>
+    <div class="chat-input">
+      <button type="button" class="icon-btn" id="attachBtn" title="Send image"><i class="fas fa-image"></i></button>
+      <div class="field-box"><input id="msgIn" type="text" placeholder="Type your message…" autocomplete="off"></div>
+      <button type="button" class="btn btn-purple" id="sendBtn"><i class="fas fa-paper-plane"></i> SEND</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
