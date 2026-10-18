@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/admin/:path*", "destination": "https://adminpanel-opal.vercel.app/:path*" }
-  ]
-}
