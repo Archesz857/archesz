@@ -1,4 +1,4 @@
-// ARCHESZ STORE - FRONT-END DEMO ONLY (no real login / payment backend)
+// ARCHESZ STORE - front-end. Data lives on the server (api/index.js + Upstash Redis).
 
 // Firebase Storage PLACEHOLDER (demo only - paste your own config to enable)
 const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "YOUR_PROJECT.firebaseapp.com", storageBucket: "YOUR_PROJECT.appspot.com" };
@@ -16,7 +16,7 @@ function uploadReceiptDemo(file, max = 720) {
 
 // ===== PRODUCTS (edit description / version / plans here) =====
 const PRODUCTS = [{
-  id: 'archesz-v157', name: 'ARCHESZ v1.57 ( INJECTOR )', version: 'v1.57', img: '../IMAGES/YOURPIC.png', /* <-- put YOUR image file in IMAGES/ and change this name */ cat: ['Android', 'Mobile', 'TOOLS'], icon: 'fa-syringe',
+  id: 'archesz-v157', name: 'ARCHESZ v1.57 ( INJECTOR )', version: 'v1.57', img: '', /* product picture is uploaded from the ADMIN panel (Users tab > Product Image) */ cat: ['Android', 'Mobile', 'TOOLS'], icon: 'fa-syringe',
   desc: 'Premium ARCHESZ injector - super safe and strong bypass. (Edit this description in PRODUCTS inside SCRIPTJS/script.js)',
   plans: [['1 DAY', 50], ['3 DAY', 100], ['7 DAY', 250], ['LIFETIME', 899]]
 }];
@@ -27,19 +27,30 @@ const pIcon = (p, cls = 'purple-icon') => p.img
   : `<div class="menu-icon ${cls}"><i class="fas ${p.icon}"></i></div>`;
 const prodOf = (name) => PRODUCTS.find((x) => x.name === name) || PRODUCTS[0];
 
-// ===== SUPPORT CENTER chat (shared by store + admin through localStorage) =====
-const CHAT = 'archesz_chat';
-const loadChat = () => { try { return JSON.parse(localStorage.getItem(CHAT)) || []; } catch { return []; } };
-const saveChat = (m) => { try { localStorage.setItem(CHAT, JSON.stringify(m)); return true; } catch { return false; } };
+// ===== Server connection =====
+const TOK = 'archesz_token', S = { coins: 0, orders: [], purchases: [], email: '', unread: 0 };
+async function api(a, d = {}) {
+  let j; try { const r = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ a, t: localStorage.getItem(TOK) || '', at: sessionStorage.getItem('arc_at') || '', ...d }) }); j = await r.json(); }
+  catch { j = { ok: false, err: 'No connection to server.' }; }
+  if (j.code === 401 && !d.quiet && document.body.dataset.role !== 'admin') { localStorage.removeItem(TOK); location.href = '/AUTH/login.html'; }
+  return j;
+}
+const loadDB = () => ({ balance: S.coins, history: S.orders, purchases: S.purchases, user: { email: S.email } });
+const setCoins = () => { const e = document.getElementById('coinBal'); if (e) e.textContent = S.coins.toLocaleString(); };
+async function boot() {
+  if (document.body.dataset.role === 'admin' || document.getElementById('authForm')) return;
+  const [j, pj] = await Promise.all([api('me'), api('prod', { quiet: true })]);
+  if (j.ok) Object.assign(S, { coins: j.coins, orders: j.orders, purchases: j.purchases, email: j.email, unread: j.unread });
+  if (pj.img) PRODUCTS[0].img = pj.img;
+}
+
+// ===== SUPPORT CENTER chat =====
 const escH = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmtTime = (t) => new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 const bubble = (m, mine, name) => `<div class="msg ${mine ? 'me' : 'them'}"><div class="msg-name">${escH(name)}</div>${m.text ? `<p>${escH(m.text)}</p>` : ''}${m.img ? `<img class="msg-img" data-img src="${m.img}" alt="image">` : ''}${m.orderId ? `<div class="msg-order"><span>ORDER ID: ${escH(m.orderId)}</span><span>ORDER TIME: ${escH(m.orderTime)}</span></div>` : ''}<small>${fmtTime(m.ts)}</small></div>`;
+const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
 document.addEventListener('click', (e) => { const i = e.target.closest('img[data-img]'); if (i) modal(`<img class="rcpt-full" src="${i.src}"><button class="btn btn-dark full-btn" data-close>Close</button>`); });
 
-// ===== Demo data store (localStorage, front-end only) =====
-const DB = 'archesz_demo';
-const loadDB = () => { let d = {}; try { d = JSON.parse(localStorage.getItem(DB)) || {}; } catch {} return { balance: 0, history: [], purchases: [], ...d }; };
-const saveDB = (d) => { try { localStorage.setItem(DB, JSON.stringify(d)); return true; } catch { return false; } };
 const ymd = (t) => { const d = new Date(t), z = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}/${z(d.getMonth() + 1)}/${z(d.getDate())}`; };
 const fmtDate = (t) => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -61,6 +72,7 @@ function countUp(el, to, ms = 900) {
   const t0 = performance.now();
   const step = (n) => { const k = Math.min((n - t0) / ms, 1), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e).toLocaleString(); if (k < 1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
+  setTimeout(() => { el.textContent = Math.round(to).toLocaleString(); }, ms + 150); // fallback (background tabs pause animations)
 }
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -100,44 +112,45 @@ document.addEventListener('click', (e) => {
 });
 addEventListener('pageshow', () => document.body.classList.remove('leaving'));
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initFX();
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => document.querySelectorAll(s);
+  await boot();
 
-  // ---- AUTH ----
-  $('#googleBtn')?.addEventListener('click', () => alert('Demo: Google sign-in is not connected.'));
-  $('#loginForm')?.addEventListener('submit', (e) => { e.preventDefault(); const d = loadDB(); d.user = { email: $('#email').value.trim() }; saveDB(d); go('verify.html'); });
-
-  if ($('#timer')) {
-    let t = 600;
-    const tick = () => {
-      const m = String(Math.floor(t / 60)).padStart(2, '0'), s = String(t % 60).padStart(2, '0');
-      $('#timer').textContent = `Code expires in ${m}:${s}`;
-      if (t > 0) t--;
-    };
-    tick(); setInterval(tick, 1000);
-    const boxes = [...$$('.otp')];
-    boxes.forEach((b, i) => {
-      b.addEventListener('input', () => { b.value = b.value.replace(/\D/g, ''); if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
-      b.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !b.value && boxes[i - 1]) boxes[i - 1].focus(); });
-      b.addEventListener('paste', (e) => {
-        const d = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
-        if (!d) return; e.preventDefault();
-        [...d].forEach((c, k) => { if (boxes[k]) boxes[k].value = c; });
-        boxes[Math.min(d.length, 5)].focus();
-      });
-    });
-    $('#verifyForm').addEventListener('submit', (e) => { e.preventDefault(); go('setpass.html'); });
+  // ---- TOP BALANCE BAR (tap = go to Top Up) ----
+  if (!$('#authForm') && document.body.dataset.role !== 'admin') {
+    const bar = document.createElement('div'); bar.className = 'coin-bar';
+    bar.innerHTML = '<a href="/BUYPOINTS/buypoints.html" class="coin-link" title="Top up"><i class="fas fa-coins"></i><b id="coinBal">0</b><span>+</span></a><button type="button" id="logoutBtn" title="Logout"><i class="fas fa-right-from-bracket"></i></button>';
+    document.body.appendChild(bar); countUp($('#coinBal'), S.coins);
+    $('#logoutBtn').addEventListener('click', () => { localStorage.removeItem(TOK); location.href = '/AUTH/login.html'; });
+    setInterval(() => api('ping', { quiet: true }), 30000);
   }
 
-  $('#passForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const a = $('#np').value, b = $('#cp').value, err = $('#passErr');
-    const msg = a.length < 8 ? 'Password must be at least 8 characters.' : a !== b ? 'Passwords do not match.' : '';
-    err.hidden = !msg; err.textContent = msg;
-    if (!msg) go('../HOMEPAGE/index.html');
-  });
+  // ---- AUTH (login / register with referral code) ----
+  if ($('#authForm')) {
+    let mode = 'login';
+    if (localStorage.getItem(TOK)) api('me', { quiet: true }).then((j) => { if (j.ok) location.replace('/HOMEPAGE/index.html'); });
+    const sync = () => {
+      $$('[data-reg]').forEach((x) => (x.hidden = mode !== 'reg'));
+      $('#authTitle').textContent = mode === 'reg' ? 'Create account' : 'Welcome back';
+      $('#authSub').textContent = mode === 'reg' ? 'Enter your referral code to register' : 'Login with your Gmail account';
+      $('#authBtn').textContent = mode === 'reg' ? 'Register' : 'Login';
+      $$('#authTabs button').forEach((b) => b.classList.toggle('active', b.dataset.m === mode));
+      $('#passErr').hidden = true;
+    };
+    $$('#authTabs button').forEach((b) => b.addEventListener('click', () => { mode = b.dataset.m; sync(); }));
+    $('#authForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); const err = $('#passErr'), btn = $('#authBtn'); err.hidden = true;
+      if (mode === 'reg' && $('#np').value !== $('#cp').value) { err.textContent = 'Passwords do not match.'; err.hidden = false; return; }
+      btn.disabled = true;
+      const j = await api(mode === 'reg' ? 'reg' : 'login', { email: $('#email').value, pass: $('#np').value, ref: $('#ref')?.value, quiet: true });
+      btn.disabled = false;
+      if (!j.ok) { err.textContent = j.err; err.hidden = false; return; }
+      localStorage.setItem(TOK, j.token); go('/HOMEPAGE/index.html');
+    });
+    sync();
+  }
 
   // ---- SHOP: products ----
   const filterBtns = $$('.filter-btn');
@@ -165,10 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const pb = ev.target.closest('.plan-btn');
         if (pb) { sel = +pb.dataset.i; m.el.querySelectorAll('.plan-btn').forEach((x) => x.classList.toggle('active', x === pb)); }
         if (ev.target.closest('[data-confirm]')) {
-          const d = loadDB(), pl = p.plans[sel];
-          if (d.balance < pl[1]) return toast(`Not enough points - you need ${(pl[1] - d.balance).toLocaleString()} more. Buy points first.`);
-          d.balance -= pl[1]; d.purchases.unshift({ id: 'PRD-' + Math.random().toString(36).slice(2, 8).toUpperCase(), product: p.name, plan: pl[0], pts: pl[1], ts: Date.now() });
-          saveDB(d); m.close(); toast(`Purchased ${pl[0]} - message ${CONTACT} to receive it.`);
+          const pl = p.plans[sel], btn = ev.target.closest('[data-confirm]'); btn.disabled = true;
+          api('buy', { pid: p.id, i: sel }).then((j) => {
+            btn.disabled = false; if (!j.ok) return toast(j.err);
+            S.coins = j.coins; setCoins(); m.close(); toast(`Purchased ${pl[0]} - message ${CONTACT} to receive it.`); api('me').then((r) => r.ok && (S.purchases = r.purchases));
+          });
         }
       });
     });
@@ -177,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- BUY POINTS ----
   const pointInput = $('.input-points input');
-  if (pointInput) {
+  if (pointInput && document.body.dataset.role !== 'admin') {
     const num = () => parseInt(String(pointInput.value).replace(/,/g, '')) || 0;
     const update = () => {
       const v = num();
@@ -207,13 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
       area.innerHTML = `<i class="fas fa-circle-check upload-icon"></i><p>${f.name.replace(/</g, '&lt;')}</p><img src="${URL.createObjectURL(f)}" alt="Payment proof preview">`;
     });
 
-    $('.full-btn').addEventListener('click', (e) => {
-      e.preventDefault();
+    $('.full-btn').addEventListener('click', async (e) => {
+      e.preventDefault(); const btn = e.currentTarget;
       if (num() < 50) return alert('Minimum purchase is 50 points.');
       if (!proof) return alert('Please upload your payment screenshot.');
-      const d = loadDB();
-      d.history.unshift({ id: 'ARC-' + Math.random().toString(36).slice(2, 8).toUpperCase(), pts: num(), amount: num(), status: 'pending', ts: Date.now(), receipt: proof, name: proofName });
-      if (!saveDB(d)) return alert('Storage is full - clear demo data and try again.');
+      btn.disabled = true; const j = await api('order', { pts: num(), name: proofName, receipt: proof }); btn.disabled = false;
+      if (!j.ok) return alert(j.err);
       toast('Request sent! Points will be credited after admin review.');
       setTimeout(() => go('../MYPOINTS/mypoints.html'), 1300);
     });
@@ -243,52 +256,65 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`).join('') : `<div class="empty-state"><i class="fas fa-inbox"></i><p>No ${f === 'all' ? '' : f + ' '}history yet.<br>Buy points to get started.</p></div>`;
     };
     $$('#histTabs .filter-btn').forEach((b) => b.addEventListener('click', () => { f = b.dataset.f; render(); }));
-    $('#resetDemo').addEventListener('click', () => { saveDB({ balance: 0, history: [], purchases: [], user: loadDB().user }); toast('Demo data cleared'); render(); });
+    $('#resetDemo')?.remove();
     render();
   }
 
   // ---- HOME: support unread ----
   const spSub = $('.menu-card[href*="support"] p');
-  if (spSub) { const em = loadDB().user?.email || 'guest@unregistered', n = loadChat().filter((m) => m.from === 'admin' && !m.read && m.email === em).length; if (n) spSub.textContent = n + ' new reply from admin'; }
+  if (spSub && S.unread) spSub.textContent = S.unread + ' new reply from admin';
 
   // ---- SUPPORT CENTER (user side) ----
+  const pickImg = (cb) => { const pk = document.createElement('input'); pk.type = 'file'; pk.accept = 'image/png,image/jpeg'; pk.hidden = true; document.body.appendChild(pk);
+    pk.addEventListener('change', async () => { const f = pk.files[0]; pk.value = ''; if (!f) return; if (f.size > 5 * 1024 * 1024) return alert('Max file size is 5MB.');
+      try { cb(await uploadReceiptDemo(f), f.name); } catch { alert('Could not read that image.'); } }); return () => pk.click(); };
   if ($('#chatBox')) {
-    const em = () => loadDB().user?.email || 'guest@unregistered';
-    let img = null, imgName = '';
-    $('#who').textContent = em();
-    if (!loadDB().user) $('#regHint').hidden = false;
-    const sel = $('#orderSel'), d0 = loadDB();
-    const orders = [...d0.history.filter((h) => !h.manual).map((h) => ({ id: h.id, ts: h.ts, label: `${h.id} - ${h.pts} pts top-up (${h.status})` })), ...d0.purchases.map((p) => ({ id: p.id, ts: p.ts, label: `${p.id} - ${p.product} ${p.plan}` }))].sort((a, b) => b.ts - a.ts);
+    let img = null, imgName = '', sig = '';
+    $('#who').innerHTML = `${escH(S.email)} • <span class="on-txt"><i class="on-dot"></i>Online</span>`;
+    const sel = $('#orderSel'), orders = [...S.orders.filter((h) => !h.manual).map((h) => ({ id: h.id, ts: h.ts, label: `${h.id} - ${h.pts} pts top-up (${h.status})` })), ...S.purchases.map((p) => ({ id: p.id, ts: p.ts, label: `${p.id} - ${p.product} ${p.plan}` }))].sort((a, b) => b.ts - a.ts);
     sel.innerHTML = `<option value="">No specific order</option>` + orders.map((o, i) => `<option value="${i}"${i ? '' : ' selected'}>${escH(o.label)}</option>`).join('');
-    const render = () => {
-      const all = loadChat(); let ch = false;
-      all.forEach((m) => { if (m.email === em() && m.from === 'admin' && !m.read) { m.read = true; ch = true; } });
-      if (ch) saveChat(all);
-      const mine = all.filter((m) => m.email === em());
+    const render = async (force) => {
+      const j = await api('chat', { quiet: true }); if (!j.ok) return;
+      const k = j.msgs.length + ':' + (j.msgs.at(-1)?.id || ''); if (k === sig && !force) return; sig = k;
       const box = $('#chatBox'), near = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-      box.innerHTML = mine.length ? mine.map((m) => bubble(m, m.from === 'user', m.from === 'user' ? em() : 'ARCHESZ ADMIN')).join('') : `<div class="empty-state"><i class="fas fa-headset"></i><p>No messages yet.<br>Tell us your problem about your order.</p></div>`;
-      if (near || !box._init) { box.scrollTop = box.scrollHeight; box._init = 1; }
+      box.innerHTML = j.msgs.length ? j.msgs.map((m) => bubble(m, m.from === 'user', m.from === 'user' ? S.email : 'ARCHESZ ADMIN')).join('') : `<div class="empty-state"><i class="fas fa-headset"></i><p>No messages yet.<br>Tell us your problem about your order.</p></div>`;
+      if (near || !box._init || force) { box.scrollTop = box.scrollHeight; box._init = 1; }
     };
     const chip = () => { $('#attachChip').hidden = !img; $('#attachChip').innerHTML = img ? `<i class="fas fa-image"></i> ${escH(imgName)} <button type="button" id="rmImg">✕</button>` : ''; };
-    const picker = document.createElement('input'); picker.type = 'file'; picker.accept = 'image/png,image/jpeg'; picker.hidden = true; document.body.appendChild(picker);
-    $('#attachBtn').addEventListener('click', () => picker.click());
-    picker.addEventListener('change', async () => {
-      const f = picker.files[0]; picker.value = ''; if (!f) return;
-      if (f.size > 5 * 1024 * 1024) return alert('Max file size is 5MB.');
-      try { img = await uploadReceiptDemo(f); imgName = f.name; chip(); } catch { alert('Could not read that image.'); }
-    });
+    $('#attachBtn').addEventListener('click', pickImg((d, n) => { img = d; imgName = n; chip(); }));
     $('#attachChip').addEventListener('click', (e) => { if (e.target.id === 'rmImg') { img = null; chip(); } });
-    const send = () => {
+    const send = async () => {
       const t = $('#msgIn').value.trim(); if (!t && !img) return toast('Type a message or attach an image.');
-      const o = sel.value === '' ? null : orders[+sel.value], all = loadChat();
-      all.push({ id: 'M' + Date.now().toString(36), email: em(), from: 'user', text: t, img, orderId: o ? o.id : '', orderTime: o ? fmtTime(o.ts) : '', ts: Date.now(), read: false });
-      if (!saveChat(all)) return toast('Storage full - try a smaller image.');
-      $('#msgIn').value = ''; img = null; chip(); render(); $('#chatBox').scrollTop = $('#chatBox').scrollHeight;
+      const o = sel.value === '' ? null : orders[+sel.value];
+      const j = await api('csend', { text: t, img, orderId: o ? o.id : '', orderTime: o ? fmtTime(o.ts) : '' }); if (!j.ok) return toast(j.err);
+      $('#msgIn').value = ''; img = null; chip(); render(true);
     };
     $('#sendBtn').addEventListener('click', send);
     $('#msgIn').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
-    addEventListener('storage', (e) => { if (e.key === CHAT) render(); });
-    render();
+    setInterval(render, 5000); render(true);
+  }
+
+  // ---- FEEDBACKS ----
+  if ($('#fbList')) {
+    let rate = 5, img = null, imgName = '';
+    $('#fbWho').textContent = S.email;
+    const paint = () => $$('#rateStars i').forEach((x, i) => x.classList.toggle('on', i < rate));
+    $('#rateStars').addEventListener('click', (e) => { const i = e.target.closest('i[data-n]'); if (i) { rate = +i.dataset.n; paint(); } }); paint();
+    const chip = () => { $('#fbChip').hidden = !img; $('#fbChip').innerHTML = img ? `<i class="fas fa-image"></i> ${escH(imgName)} <button type="button" id="fbRm">✕</button>` : ''; };
+    $('#fbAttach').addEventListener('click', pickImg((d, n) => { img = d; imgName = n; chip(); }));
+    $('#fbChip').addEventListener('click', (e) => { if (e.target.id === 'fbRm') { img = null; chip(); } });
+    const load = async () => {
+      const j = await api('fbs', { quiet: true }); if (!j.ok) return;
+      $('#fbAvg').textContent = j.fbs.length ? `${j.avg.toFixed(1)} ★ · ${j.fbs.length} feedback${j.fbs.length > 1 ? 's' : ''}` : 'Be the first to rate';
+      $('#fbList').innerHTML = j.fbs.length ? j.fbs.map((f, i) => `<div class="order-card fb-card" style="animation-delay:${i * 60}ms"><div class="order-top"><h3 class="fb-mail">${escH(f.email)}</h3><span class="fb-stars">${stars(f.stars)}</span></div><p class="fb-text">${escH(f.text)}</p>${f.img ? `<img class="thumb" data-img src="${f.img}" alt="feedback">` : ''}<small class="fb-time">${fmtTime(f.ts)}</small></div>`).join('') : `<div class="empty-state"><i class="fas fa-star"></i><p>No feedbacks yet.</p></div>`;
+    };
+    $('#fbSend').addEventListener('click', async () => {
+      const btn = $('#fbSend'); btn.disabled = true;
+      const j = await api('fbsend', { stars: rate, text: $('#fbText').value, img }); btn.disabled = false;
+      if (!j.ok) return toast(j.err);
+      $('#fbText').value = ''; img = null; chip(); toast('Thank you for your feedback! ⭐'); load();
+    });
+    setInterval(load, 15000); load();
   }
 
   // ---- DONE BUY ----
@@ -306,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- ADMIN RESULT POPUP (store side only) ----
-  if (document.body.dataset.role !== 'admin') {
+  if (document.body.dataset.role !== 'admin' && !$('#authForm')) {
     const d = loadDB(), n = d.history.find((h) => h.status !== 'pending' && !h.seen);
     if (n) {
       const ok = n.status === 'approved';
@@ -315,8 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="small-note">${ok ? `+${n.pts.toLocaleString()} Coins added to your balance` : `Order ${n.id} was cancelled`}</p>
         <p class="small-note">For more Inquiries: <b class="text-green">${CONTACT}</b></p>
         <button class="btn btn-purple full-btn" data-close>OK</button>`,
-        () => { const x = loadDB(); x.history.forEach((h) => { if (h.status !== 'pending') h.seen = true; }); saveDB(x); });
+        () => { api('seen', { quiet: true }); });
     }
-    addEventListener('storage', (e) => { if (e.key === DB && !$('.input-points') && !$('#chatBox')) location.reload(); });
   }
 });
