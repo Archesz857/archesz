@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCHESZ STORE — Set Password</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/style.css">
+<script src="../SCRIPTJS/script.js" defer></script>
+</head>
+<body>
+<div class="container auth-wrap">
+  <div class="auth-head">
+    <h1>Set your password</h1>
+    <p>Create a secure password for your account</p>
+  </div>
+  <form class="panel-card" id="passForm">
+    <label class="field-label" for="np">New password</label>
+    <div class="field-box"><i class="fas fa-lock"></i><input id="np" type="password" placeholder="At least 8 characters" required></div>
+    <label class="field-label" for="cp">Confirm password</label>
+    <div class="field-box"><i class="fas fa-lock"></i><input id="cp" type="password" placeholder="Repeat password" required></div>
+    <p class="warn-note" id="passErr" hidden></p>
+    <button class="btn btn-purple full-btn" type="submit">Set password</button>
+  </form>
+</div>
+</body>
+</html>
