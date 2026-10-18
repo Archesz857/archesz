@@ -338,3 +338,25 @@ body{background-color:var(--bg-main);background-image:none}
 .attach-chip{margin-top:10px;padding:8px 12px;border-radius:var(--radius-sm);background:rgba(177,140,255,.14);border:1px solid rgba(177,140,255,.5);font-size:13px;display:flex;align-items:center;gap:8px}
 .attach-chip button{margin-left:auto;background:none;border:none;color:#fff;cursor:pointer;font-size:15px}
 .badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#ff4fd8;color:#fff;font-size:11px;font-weight:700;margin-left:6px;box-shadow:0 0 12px #ff4fd8;animation:blink 1.4s infinite}
+
+/* ===== v8: top coin bar, auth tabs, online, feedbacks ===== */
+.coin-bar{position:fixed;top:12px;right:12px;z-index:90;display:flex;gap:8px;align-items:center}
+.coin-link{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:30px;color:#fff;text-decoration:none;font:700 14px 'Orbitron',sans-serif;background:rgba(10,13,24,.88);backdrop-filter:blur(10px);border:1.5px solid rgba(255,204,70,.65);box-shadow:0 0 20px rgba(255,204,70,.35);animation:coinglow 2.6s ease-in-out infinite;transition:transform .25s}
+.coin-link:hover{transform:translateY(-2px) scale(1.04)}
+.coin-link i{color:#ffcc46;filter:drop-shadow(0 0 6px #ffcc46)}.coin-link span{color:#00ffa3;font-size:16px}
+#logoutBtn{width:36px;height:36px;border-radius:50%;cursor:pointer;color:#ff8fa0;background:rgba(10,13,24,.88);border:1px solid rgba(255,93,115,.5)}
+@keyframes coinglow{50%{box-shadow:0 0 36px rgba(255,204,70,.75)}}
+#authTabs{margin-bottom:18px}
+.on-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#00ffa3;box-shadow:0 0 10px #00ffa3;margin-right:5px;animation:blink 1.4s infinite}
+.on-txt{color:#00ffa3;font-weight:600}.off-txt{color:#7d849c}.off-txt .on-dot{background:#59607a;box-shadow:none;animation:none}
+.field-box.ta{align-items:flex-start}
+.field-box textarea{width:100%;min-height:90px;background:none;border:none;outline:none;color:#fff;font:inherit;resize:vertical}
+.rate-stars i{font-size:28px;color:#3a3f55;cursor:pointer;margin-left:4px;transition:all .2s}
+.rate-stars i.on{color:#ffcc46;text-shadow:0 0 14px #ffcc46}.rate-stars i:hover{transform:scale(1.25)}
+#fbList{display:grid;gap:14px;margin-top:18px}
+.fb-mail{font-size:14px;word-break:break-all}.fb-stars{color:#ffcc46;letter-spacing:2px;text-shadow:0 0 10px rgba(255,204,70,.6);white-space:nowrap}
+.fb-text{margin:8px 0;font-size:15px;word-break:break-word}.fb-time{color:var(--text-gray)}
+.menu-list .menu-card:nth-child(6){animation-delay:.9s}
+
+[hidden]{display:none!important}
+.fb-card .order-top{align-items:flex-start}
