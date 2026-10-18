@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCHESZ STORE — Feedbacks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/style.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/admin.css">
+<script src="../SCRIPTJS/script.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <header class="shop-header">
+    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
+    <h1>Feedbacks</h1>
+    <p>See what other users say</p>
+  </header>
+  <div class="panel-card chat-panel">
+    <div class="chat-top"><span class="vip-badge"><span class="dot"></span> ONLINE FEEDBACKS</span><small id="fbAvg"></small></div>
+    <div class="kv"><b>GMAIL:</b><span id="fbWho" style="word-break:break-all"></span></div>
+    <div class="kv"><b>RATE:</b><span class="rate-stars" id="rateStars"><i data-n="1">★</i><i data-n="2">★</i><i data-n="3">★</i><i data-n="4">★</i><i data-n="5">★</i></span></div>
+    <div class="field-box ta" style="margin-top:14px"><textarea id="fbText" maxlength="400" placeholder="Say your feedback…"></textarea></div>
+    <div class="attach-chip" id="fbChip" hidden></div>
+    <div class="chat-input">
+      <button type="button" class="icon-btn" id="fbAttach" title="Add image"><i class="fas fa-image"></i></button>
+      <button type="button" class="btn btn-purple full-btn" id="fbSend" style="flex:1"><i class="fas fa-paper-plane"></i> SEND</button>
+    </div>
+  </div>
+  <div id="fbList"></div>
+</div>
+</body>
+</html>
