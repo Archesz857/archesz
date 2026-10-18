@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCHESZ STORE — Buy Points</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/style.css">
+<script src="../SCRIPTJS/script.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <header class="shop-header">
+    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
+    <h1>Buy Points</h1>
+    <p>Top up your points balance and start purchasing cheat from archesz</p>
+  </header>
 
+  <div class="panel-card">
+    <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
+    <div class="gcash-option">
+      <span class="gcash-label">GCash</span>
+      <span class="gcash-num">09933554796</span>
+      <i class="fas fa-check-circle check-purple"></i>
+    </div>
+    <div class="rate-note">
+      <i class="fas fa-info-circle"></i> Rate: 1 PHP = 1 Point  ·  Minimum purchase: 50 points
+    </div>
+  </div>
+
+  <div class="panel-card">
+    <h2><i class="fas fa-clock"></i> Points Amount</h2>
+    <div class="input-points">
+      <input type="number" value="100" placeholder="ENTER NUMBER OF POINTS">
+      <span>COINS</span>
+    </div>
+    <div class="quick-btns">
+    </div>
+  </div>
+
+  <div class="panel-card">
+    <h2><i class="fas fa-upload"></i> Proof of Payment</h2>
+    <div class="upload-area">
+      <i class="fas fa-image upload-icon"></i>
+      <p>Click or drag to upload screenshot</p>
+      <small>PNG, JPG up to 5MB</small>
+    </div>
+  </div>
+
+  <div class="panel-card">
+    <h2>Order Summary</h2>
+    <div class="sum-row">
+      <span>Current Balance</span>
+      <span class="purple-txt">0 COINS</span>
+    </div>
+    <div class="sum-row">
+      <span>Points to Buy</span>
+      <span id="sumPts">—</span>
+    </div>
+    <div class="sum-row">
+      <span>Payment Method</span>
+      <span>GCash</span>
+    </div>
+    <div class="sum-row">
+      <span>Rate</span>
+      <span>₱01 Estimated 1 Coins  </span>
+    </div>
+    <div class="sum-row total-row">
+      <span>Total to Pay<br><small>PHP</small></span>
+      <span class="purple-txt" id="sumTotal">₱0</span>
+    </div>
+    <button class="btn btn-purple full-btn"><i class="fas fa-paper-plane"></i> Submit Request</button>
+    <p class="small-note">Points will be credited after admin review</p>
+  </div>
+</div>
+</body>
+</html>
