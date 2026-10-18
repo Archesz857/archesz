@@ -2,7 +2,7 @@
 //   KV_REST_API_URL + KV_REST_API_TOKEN   (added automatically when you connect Upstash Redis / Vercel KV)
 //   ADMIN_PASSWORD  (admin panel password)      REFERRAL_CODE (default 3142020)
 const crypto = require('crypto');
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL, TOK_ = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const URL_ = process.env.archesz_KV_REST_API_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL, TOK_ = process.env.archesz_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const REF = process.env.REFERRAL_CODE || '3142020', ADMIN = process.env.ADMIN_PASSWORD || 'archesz';
 // Prices live HERE (server) so users cannot cheat. Keep in sync with PRODUCTS in SCRIPTJS/script.js
 const PLANS = { 'archesz-v157': { name: 'ARCHESZ v1.57 ( INJECTOR )', plans: [['1 DAY', 50], ['3 DAY', 100], ['7 DAY', 250], ['LIFETIME', 899]] } };
