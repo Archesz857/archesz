@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARCHESZ STORE — Register</title>
+<title>ARCHESZ STORE — Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -14,17 +14,28 @@
 <div class="container auth-wrap">
   <div class="auth-head">
     <div class="vip-badge"><span class="dot"></span> ARCHESZ STORE</div>
-    <h1>Register</h1>
-    <p>Register Your Accounts to secure order</p>
+    <h1 id="authTitle">Welcome back</h1>
+    <p id="authSub">Login with your Gmail account</p>
   </div>
   <div class="panel-card">
-    <button class="btn btn-dark full-btn" id="googleBtn" type="button"><i class="fab fa-google"></i> Continue with Google</button>
-    <div class="or-line"><span>or</span></div>
-    <form id="loginForm">
-      <label class="field-label" for="email">Email address</label>
-      <div class="field-box"><i class="fas fa-envelope"></i><input id="email" type="email" placeholder="RegisterGmail@gmail.com" required></div>
-      <p class="warn-note"><i class="fas fa-triangle-exclamation"></i> Email login has a known bug. Use Google if it fails.</p>
-      <button class="btn btn-purple full-btn" type="submit">Continue</button>
+    <div class="filter-btns" id="authTabs">
+      <button type="button" class="filter-btn active" data-m="login">Login</button>
+      <button type="button" class="filter-btn" data-m="reg">Register</button>
+    </div>
+    <form id="authForm">
+      <label class="field-label" for="email">Gmail account</label>
+      <div class="field-box"><i class="fas fa-envelope"></i><input id="email" type="email" placeholder="RegisterGmail@gmail.com" required autocomplete="email"></div>
+      <label class="field-label" for="np">Password</label>
+      <div class="field-box"><i class="fas fa-lock"></i><input id="np" type="password" placeholder="Min. 8 characters" required minlength="8" autocomplete="current-password"></div>
+      <div data-reg hidden>
+        <label class="field-label" for="cp">Confirm password</label>
+        <div class="field-box"><i class="fas fa-lock"></i><input id="cp" type="password" placeholder="Repeat password" autocomplete="new-password"></div>
+        <label class="field-label" for="ref">Referral code</label>
+        <div class="field-box"><i class="fas fa-ticket"></i><input id="ref" type="text" inputmode="numeric" placeholder="Enter referral code" autocomplete="off"></div>
+        <p class="warn-note"><i class="fas fa-circle-info"></i> Coins belong to the Gmail you register with. A different Gmail starts with 0 coins.</p>
+      </div>
+      <p class="warn-note" id="passErr" hidden></p>
+      <button class="btn btn-purple full-btn" id="authBtn" type="submit">Login</button>
     </form>
   </div>
 </div>
