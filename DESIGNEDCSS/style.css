@@ -548,3 +548,94 @@ input[type=email]::placeholder{text-transform:none}
 .mini-btn:hover{box-shadow:0 0 30px #5eead4;transform:translateY(-2px) scale(1.06)}
 .hero-card h1{margin-bottom:16px}.hero-card p{margin-bottom:4px;line-height:1.7}
 .claim-orb.fail{animation:none}
+
+/* ===================== v11: GHOSST SHOP CARD / BUY / TOP-UP / HISTORY ===================== */
+:root{--gold:#f5c542}
+/* ---- shop card (like ghossthub product card) ---- */
+.gh-card{border-radius:26px;overflow:hidden;margin-bottom:20px;border:1.5px solid rgba(20,184,184,.4);background:#06131a;
+ box-shadow:0 0 34px rgba(20,184,184,.2),0 18px 44px rgba(0,0,0,.6);animation:rise .6s var(--transition-smooth) backwards;transition:transform .35s,box-shadow .35s;position:relative}
+.gh-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;z-index:3;background:linear-gradient(90deg,transparent,#14b8b8,#5eead4,#14b8b8,transparent);background-size:200% 100%;animation:flow 3s linear infinite}
+.gh-card:hover{transform:translateY(-4px);box-shadow:0 0 60px rgba(20,184,184,.45),0 22px 50px rgba(0,0,0,.6)}
+.gh-banner{position:relative;display:flex;align-items:center;gap:16px;padding:26px 20px;min-height:170px;background-size:cover;background-position:center}
+.gh-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,16,17,.25),rgba(3,16,17,.7))}
+.gh-banner>*{position:relative;z-index:1}
+.gh-appicon{width:84px;height:84px;border-radius:20px;border:2px solid rgba(94,234,212,.6);box-shadow:0 0 28px rgba(20,184,184,.8);object-fit:cover;background:#041012;animation:floaty 3.4s ease-in-out infinite;flex:none}
+@keyframes floaty{50%{transform:translateY(-6px)}}
+.gh-banner-txt h2{font-size:clamp(22px,7vw,30px);letter-spacing:2px;color:#fff;text-shadow:0 0 22px rgba(20,184,184,.9),0 2px 10px #000;margin-bottom:8px}
+.gh-and{display:flex;align-items:center;gap:10px;font:600 15px 'Inter',sans-serif;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
+.gh-and-ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:18px;box-shadow:0 0 16px rgba(34,197,94,.7)}
+.gh-body{padding:20px}
+.gh-name{font-size:19px;letter-spacing:2px;color:#e6fffb;margin-bottom:12px;text-shadow:0 0 14px rgba(20,184,184,.5)}
+.gh-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tg{display:inline-flex;align-items:center;gap:7px;font:600 12px 'Inter',sans-serif;letter-spacing:1.2px;padding:7px 13px;border-radius:30px;border:1px solid}
+.tg-mod{color:#b07cff;border-color:rgba(176,124,255,.55);background:rgba(120,70,220,.14);box-shadow:0 0 14px rgba(150,100,255,.25)}
+.tg-and{color:#7ef0a0;border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.12);box-shadow:0 0 14px rgba(34,197,94,.25)}
+.tg-stock{color:#8ff5b0;border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.14);box-shadow:0 0 14px rgba(34,197,94,.3)}
+.tg-stock .fa-circle-check{font-size:15px}
+.g-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;animation:pulse-dot 1.6s infinite}
+.tg-chip{color:#5eead4;border-color:rgba(20,184,184,.4);background:rgba(20,184,184,.08)}
+.gh-price{font:700 clamp(22px,7vw,30px) 'Orbitron',sans-serif;color:var(--gold);margin:14px 0 16px;text-shadow:0 0 18px rgba(245,197,66,.55)}
+.gh-price small{font:600 15px 'Inter',sans-serif;color:#6f9a9a;letter-spacing:1px;text-shadow:none}
+.gh-buy{border-radius:18px}
+/* ---- buy-now floating modal with video background ---- */
+.modal-back:has(.buy-modal){background:rgba(1,8,9,.82)}
+.modal.buy-modal{position:relative;overflow:hidden;padding:0;max-width:400px;animation:floatin .7s var(--transition-smooth),bobmodal 5s ease-in-out .7s infinite;box-shadow:0 0 70px rgba(20,184,184,.55),0 30px 70px rgba(0,0,0,.7)}
+@keyframes floatin{from{transform:translateY(40px) scale(.9);opacity:0}}
+@keyframes bobmodal{50%{transform:translateY(-8px)}}
+.buy-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.buy-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(2,12,13,.55),rgba(2,12,13,.82))}
+.buy-inner{position:relative;z-index:2;padding:26px 22px}
+.buy-icon{width:74px;height:74px;border-radius:18px;border:2px solid rgba(94,234,212,.6);box-shadow:0 0 26px rgba(20,184,184,.8);margin-bottom:10px;animation:floaty 3s ease-in-out infinite}
+.buy-inner h2{font-size:24px;letter-spacing:2px;text-shadow:0 0 20px rgba(20,184,184,.9)}
+.buy-desc{font:600 12px 'Inter',sans-serif;letter-spacing:1.6px;color:#bfe9e9;margin:8px 0 14px;line-height:1.7}
+.buy-modal .plan-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.buy-modal .plan-btn{position:relative;display:block;width:100%;padding:15px;border-radius:16px;background:rgba(3,18,19,.72);backdrop-filter:blur(6px);border:1.5px solid rgba(20,184,184,.35);color:#e6fffb;font:700 16px 'Inter',sans-serif;letter-spacing:1.5px;cursor:pointer;transition:.25s}
+.buy-modal .plan-btn:hover{border-color:#5eead4;box-shadow:0 0 24px rgba(20,184,184,.5);transform:translateX(4px)}
+.buy-modal .plan-btn.active{border-color:#5eead4;background:rgba(20,184,184,.22);box-shadow:0 0 34px rgba(20,184,184,.7),inset 0 0 18px rgba(94,234,212,.2);color:#fff}
+.best-tag{position:absolute;right:12px;top:-10px;font:700 10px 'Inter',sans-serif;font-style:normal;letter-spacing:2px;color:#021a1a;background:linear-gradient(120deg,#14b8b8,#5eead4);padding:3px 10px;border-radius:8px;box-shadow:0 0 14px rgba(20,184,184,.8)}
+.buy-inner .btn[disabled]{opacity:.6}
+/* ---- order complete ---- */
+.done-ico{width:150px;height:150px;object-fit:contain;margin:0 auto 6px;display:block;filter:drop-shadow(0 0 26px #14b8b8);animation:orbpop .8s var(--transition-smooth),floaty 3s ease-in-out .8s infinite}
+.admin-say{margin:6px 0 18px;padding:14px;border-radius:16px;background:rgba(20,184,184,.1);border:1px solid rgba(94,234,212,.5);font:600 13px 'Inter',sans-serif;letter-spacing:1.4px;line-height:1.7;color:#d9fffa;box-shadow:0 0 24px rgba(20,184,184,.3)}
+.admin-say b{color:#5eead4;text-shadow:0 0 12px #14b8b8}
+/* ---- history: apk rows ---- */
+.buy-hist{flex-wrap:wrap;align-items:center}
+.hist-apk{width:64px;height:64px;border-radius:16px;border:2px solid rgba(94,234,212,.55);box-shadow:0 0 22px rgba(20,184,184,.7);object-fit:cover;flex:none;animation:iconpulse 2.8s ease-in-out infinite}
+.buy-hist .hist-info h3{font-size:16px;letter-spacing:2px;color:#e6fffb}
+.buy-hist .hist-info p{font:600 12px 'Inter',sans-serif;letter-spacing:1.4px;color:#9fd6d6;margin-top:3px}
+.buy-hist .hist-info .hist-id{color:#5f8a8a;font-size:11px}
+.hist-actions{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:12px}
+.hist-actions .mini-btn{width:100%;padding:13px;font-size:13px;border-radius:14px;display:flex;justify-content:center;align-items:center;gap:8px}
+.mini-btn.alt{background:rgba(20,184,184,.1);color:#5eead4;border:1px solid #14b8b8;animation:none}
+.mini-btn.alt:hover{background:rgba(20,184,184,.28);box-shadow:0 0 26px rgba(20,184,184,.6)}
+.mini-btn.sent{background:rgba(34,197,94,.15);color:#8ff5b0;border-color:#22c55e}
+.mini-btn.downloading{opacity:.85}
+/* ---- support chat: shared order card ---- */
+.share-card{margin-top:10px;padding:12px;border-radius:14px;background:rgba(2,16,17,.55);border:1px solid rgba(94,234,212,.5);box-shadow:0 0 20px rgba(20,184,184,.3);text-align:left}
+.sc-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(94,234,212,.2);font:600 12px 'Inter',sans-serif;letter-spacing:1.2px}
+.sc-row:last-of-type{border-bottom:none;margin-bottom:8px}
+.sc-row span{color:#7fcfcf}.sc-row b{color:#e6fffb;text-align:right}
+.sc-apk{display:inline-flex;align-items:center;gap:8px}.sc-apk img{width:26px;height:26px;border-radius:8px;box-shadow:0 0 10px #14b8b8}
+.sc-ok{color:#22c55e;filter:drop-shadow(0 0 6px #22c55e)}
+.msg.me .share-card .sc-row span{color:#c8fffa}.msg.me .share-card{background:rgba(2,16,17,.7)}
+.msg.me .share-card b{color:#fff}
+/* ---- top-up page ---- */
+.tu-card{padding:22px}
+.tu-title{display:flex;align-items:center;gap:12px;font:700 15px 'Orbitron',sans-serif;letter-spacing:4px;color:#5eead4;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(20,184,184,.25)}
+.tu-sub{margin-top:22px;border-bottom:none;padding-bottom:0;margin-bottom:12px}
+.tu-dot{width:11px;height:11px;border-radius:50%;background:#5eead4;box-shadow:0 0 14px #5eead4,0 0 28px #14b8b8;animation:pulse-dot 1.6s infinite}
+.gcash-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;border-radius:20px;background:rgba(20,184,184,.06);border:1px solid rgba(20,184,184,.35);margin-bottom:16px;box-shadow:0 0 28px rgba(20,184,184,.18)}
+.gcash-img{width:min(240px,70%);border-radius:16px;border:3px solid #fff;box-shadow:0 0 34px rgba(20,184,184,.55)}
+.gcash-line{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 12px 'Inter',sans-serif;letter-spacing:3px;color:#7fcfcf}
+.gcash-line b{font:700 24px 'Orbitron',sans-serif;letter-spacing:3px;color:#5eead4;text-shadow:0 0 18px #14b8b8}
+.tu-card .input-points{display:flex;align-items:center;gap:14px;padding:18px;border-radius:20px;margin-bottom:14px}
+.tu-card .input-points input{flex:1;background:none;border:none;outline:none;color:#fff;font:700 28px 'Inter',sans-serif;letter-spacing:1px;min-width:0;pointer-events:none}
+.tu-coin{font-size:28px;color:#5eead4;filter:drop-shadow(0 0 10px #14b8b8)}
+.tu-card .input-points span{font-size:24px;color:var(--gold);font-weight:700;text-shadow:0 0 14px rgba(245,197,66,.6)}
+.tu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tu-chip{position:relative;padding:20px 8px;border-radius:18px;background:rgba(3,14,15,.95);border:1.5px solid rgba(20,184,184,.35);color:#dffffb;font:600 20px 'Inter',sans-serif;cursor:pointer;transition:.25s}
+.tu-chip:hover{border-color:#5eead4;box-shadow:0 0 22px rgba(20,184,184,.5);transform:translateY(-2px)}
+.tu-chip.active{border-color:#5eead4;background:rgba(20,184,184,.14);color:#5eead4;box-shadow:0 0 30px rgba(20,184,184,.65),inset 0 0 16px rgba(94,234,212,.15)}
+.tu-card .upload-area{margin-bottom:18px}
+@media(max-width:380px){.tu-grid{gap:8px}.tu-chip{font-size:17px}.gh-appicon{width:70px;height:70px}}
+.upload-area.need{border-color:#ff5d73;box-shadow:0 0 26px rgba(255,93,115,.55);animation:shake .4s}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}.upload-area{border:2px dashed rgba(94,234,212,.55);box-shadow:0 0 22px rgba(20,184,184,.25)}.upload-icon{color:#5eead4;filter:drop-shadow(0 0 10px #14b8b8)}
