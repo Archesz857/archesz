@@ -21,6 +21,8 @@ const PRODUCTS = [{
   plans: [['1 DAY', 50], ['3 DAY', 100], ['7 DAY', 250], ['LIFETIME', 899]]
 }];
 const CONTACT = '@Archeszcom';
+// >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
+const APK_LINK = 'YOUR MEDIAFIRE LINK';
 // Product icon: shows your image (same size as the old icon). Falls back to the font icon if the image is missing.
 const pIcon = (p, cls = 'purple-icon') => p.img
   ? `<div class="menu-icon prod-img"><img src="${p.img}" alt="${p.name}" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fas ${p.icon}'}))"></div>`
@@ -87,7 +89,7 @@ function initFX() {
   const c = document.createElement('canvas'); c.id = 'fx'; document.body.prepend(c);
   const x = c.getContext('2d'); let w, h;
   const size = () => { w = c.width = innerWidth; h = c.height = innerHeight; }; size(); addEventListener('resize', size);
-  const P = Array.from({ length: 46 }, (_, i) => ({ c: ['0,255,163','34,211,238','177,140,255','255,79,216'][i % 4], x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.8 + .4, v: Math.random() * .35 + .1, a: Math.random() * .5 + .15, d: Math.random() * 6 }));
+  const P = Array.from({ length: 46 }, (_, i) => ({ c: ['20,184,184','94,234,212','45,212,212','153,246,228'][i % 4], x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.8 + .4, v: Math.random() * .35 + .1, a: Math.random() * .5 + .15, d: Math.random() * 6 }));
   (function draw(t) {
     x.clearRect(0, 0, w, h);
     P.forEach((p) => {
@@ -328,7 +330,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="hist-info"><h3>${h.title}</h3><p>${h.sub}</p></div>
         <div class="hist-right"><span class="pill approved">${h.pill}</span>${h.note ? `<button class="mini-btn" data-contact>Claim</button>` : ''}</div>
       </div>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>No completed orders yet.<br>Approved purchases show up here.</p></div>`;
-    $('#doneList').addEventListener('click', (e) => { if (e.target.closest('[data-contact]')) toast(`Message ${CONTACT} with your order ID to receive your product.`); });
+    $('#doneList').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-contact]'); if (!b) return;
+      const p = prodOf((b.closest('.hist-item').querySelector('h3').textContent || '').split(' - ')[0]), ok = /^https?:\/\//i.test(APK_LINK);
+      const m = modal(`<div class="claim-orb"><i class="fas fa-lock"></i></div>
+        <h2 class="claim-title">VERIFYING ORDER…</h2>
+        <div class="claim-bar"><i></i></div>
+        <p class="small-note claim-sub">UNLOCKING YOUR PRODUCT</p>
+        <div class="claim-reveal" hidden>
+          <p class="small-note">${p.name} · ${p.version}</p>
+          <a class="btn btn-purple full-btn dl-btn" data-dl href="${ok ? APK_LINK : '#'}" ${ok ? 'target="_blank" rel="noopener"' : ''}><i class="fas fa-download"></i> DOWNLOAD APK NOW</a>
+          <p class="small-note">NEED HELP? <b class="text-green">${CONTACT}</b></p>
+        </div>
+        <button class="btn btn-dark full-btn" data-close>CLOSE</button>`);
+      setTimeout(() => {
+        const el = m.el; if (!el) return;
+        el.querySelector('.claim-orb').classList.add('done'); el.querySelector('.claim-orb i').className = 'fas fa-lock-open';
+        el.querySelector('.claim-title').textContent = 'ORDER VERIFIED ✅';
+        el.querySelector('.claim-sub').hidden = true; el.querySelector('.claim-bar').hidden = true;
+        el.querySelector('.claim-reveal').hidden = false; el.classList.add('burst');
+      }, reduced ? 100 : 1700);
+      m.el.addEventListener('click', (ev) => {
+        const a = ev.target.closest('[data-dl]'); if (!a) return;
+        if (!ok) { ev.preventDefault(); toast(`APK link not set yet - message ${CONTACT} with your order ID.`); return; }
+        a.classList.add('downloading'); a.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> OPENING MEDIAFIRE…';
+        setTimeout(() => { a.classList.remove('downloading'); a.classList.add('is-done'); a.innerHTML = '<i class="fas fa-check"></i> DOWNLOAD STARTED'; }, 1800);
+      });
+    });
   }
 
   // ---- ADMIN RESULT POPUP (store side only) ----
