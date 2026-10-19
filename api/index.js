@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const URL_ = process.env.archesz_KV_REST_API_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL, TOK_ = process.env.archesz_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const REF = process.env.REFERRAL_CODE || '3142020', ADMIN = process.env.ADMIN_PASSWORD || 'archesz';
 // Prices live HERE (server) so users cannot cheat. Keep in sync with PRODUCTS in SCRIPTJS/script.js
-const PLANS = { 'archesz-v157': { name: 'ARCHESZ v1.57 ( INJECTOR )', plans: [['1 DAY', 50], ['3 DAY', 100], ['7 DAY', 250], ['LIFETIME', 899]] } };
+const PLANS = { 'archesz-v1': { name: 'ARCHESZ V1', plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]] } };
 
 const rd = async (...c) => { const r = await fetch(URL_, { method: 'POST', headers: { Authorization: 'Bearer ' + TOK_ }, body: JSON.stringify(c) }); const j = await r.json(); if (j.error) throw new Error(j.error); return j.result; };
 const hget = async (h, k) => { const v = await rd('HGET', h, k); return v ? JSON.parse(v) : null; };
@@ -58,7 +58,7 @@ const R = {
     const u = await hget('users', e); if (u.coins < pl[1]) bad(`Not enough coins - you need ${pl[1] - u.coins} more.`);
     u.coins -= pl[1]; await hset('users', e, u);
     const pid = 'PRD-' + rid(); await hset('purchases', pid, { id: pid, email: e, product: p.name, plan: pl[0], pts: pl[1], ts: Date.now() });
-    return { coins: u.coins };
+    return { coins: u.coins, id: pid, plan: pl[0], pts: pl[1] };
   },
   async chat(b) {
     const e = await who(b), all = (await hall('chat')).filter((m) => m.email === e).sort((x, y) => x.ts - y.ts);
@@ -66,8 +66,15 @@ const R = {
     return { msgs: all };
   },
   async csend(b) {
-    const e = await who(b), text = String(b.text || '').slice(0, 600); if (!text && !b.img) bad('Type a message or attach an image.');
-    const m = { id: 'M' + rid(5), email: e, from: 'user', text, img: await saveImg(b.img), orderId: String(b.orderId || '').slice(0, 20), orderTime: String(b.orderTime || '').slice(0, 40), ts: Date.now(), read: false };
+    const e = await who(b); let text = String(b.text || '').slice(0, 600), share = null;
+    if (b.share) { // "SHARE APK TO ADMIN": built from the buyer's REAL purchase, never from client-typed values
+      const pu = await hget('purchases', String(b.share));
+      if (!pu || pu.email !== e) bad('Order not found.');
+      share = { pid: pu.id, email: e, product: pu.product, plan: pu.plan, payment: 'GCASH', status: 'DONE', icon: /^https?:\/\/[^\s"'<>]{4,200}$/.test(b.icon || '') ? b.icon : '' };
+      text = text || 'SHARED APK ORDER';
+    }
+    if (!text && !b.img) bad('Type a message or attach an image.');
+    const m = { id: 'M' + rid(5), email: e, from: 'user', text, img: await saveImg(b.img), share, orderId: String(b.orderId || '').slice(0, 20), orderTime: String(b.orderTime || '').slice(0, 40), ts: Date.now(), read: false };
     await hset('chat', m.id, m); return {};
   },
   async fbsend(b) {
