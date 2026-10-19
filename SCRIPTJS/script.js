@@ -23,7 +23,7 @@ const PRODUCTS = [{
   plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
 }];
 const CONTACT = '@Archeszcom';
- >> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
+// >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
 const APK_LINK = 'https://www.mediafire.com/file/2810vl417npoylb/NO+SKIN+INJECTOR+V1.apk/file';
 // Product icon: shows your image (same size as the old icon). Falls back to the font icon if the image is missing.
 const pIcon = (p, cls = 'purple-icon') => p.img
@@ -55,7 +55,7 @@ const shareCard = (s) => `<div class="share-card"><div class="sc-row"><span>USER
   <div class="sc-row"><span>PAYMENT</span><b>${escH(s.payment)} VIA - ${escH(s.status)} <i class="fas fa-circle-check sc-ok"></i></b></div>
   <div class="sc-row"><span>DURATION</span><b>${escH(s.plan)}</b></div>
   ${document.body.dataset.role === 'admin' ? `<button class="btn btn-purple full-btn" data-sendlic data-product="${escH(s.product)}" data-plan="${escH(s.plan)}"><i class="fas fa-key"></i> SEND LICENCE TO USER</button>` : ''}</div>`;
-const bubble = (m, mine, name) => `<div class="msg ${mine ? 'me' : 'them'}"><div class="msg-name">${escH(name)}</div>${m.text ? `<p>${escH(m.text)}</p>` : ''}${m.img ? `<img class="msg-img" data-img src="${m.img}" alt="image">` : ''}${m.orderId ? `<div class="msg-order"><span>ORDER ID: ${escH(m.orderId)}</span><span>ORDER TIME: ${escH(m.orderTime)}</span></div>` : ''}${m.share ? shareCard(m.share) : ''}<small>${fmtTime(m.ts)}</small></div>`;
+const bubble = (m, mine, name) => `<div class="msg ${mine ? 'me' : 'them'}"><div class="msg-name">${escH(name)}</div>${m.text && !m.share ? `<p>${escH(m.text)}</p>` : ''}${m.img ? `<img class="msg-img" data-img src="${m.img}" alt="image">` : ''}${m.orderId ? `<div class="msg-order"><span>ORDER ID: ${escH(m.orderId)}</span><span>ORDER TIME: ${escH(m.orderTime)}</span></div>` : ''}${m.share ? shareCard(m.share) : ''}<small>${fmtTime(m.ts)}</small></div>`;
 const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
 document.addEventListener('click', (e) => { const i = e.target.closest('img[data-img]'); if (i) modal(`<img class="rcpt-full" src="${i.src}"><button class="btn btn-dark full-btn" data-close>Close</button>`); });
 
