@@ -20,7 +20,7 @@ const PRODUCTS = [{
   id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: ASSET.icon, cat: ['Android', 'Mobile', 'TOOLS'], icon: 'fa-syringe',
   tags: ['GARENA', 'LATEST VERSION', 'ARCHESZ V1'],
   desc: 'CHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.',
-  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
+  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 100]]
 }];
 const CONTACT = '@Archeszcom';
 // >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
