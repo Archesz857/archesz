@@ -14,65 +14,39 @@
 <div class="container">
   <header class="shop-header">
     <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>Buy Points</h1>
-    <p>Top up your points balance and start purchasing cheat from archesz</p>
+    <h1>CREATE TOP-UP</h1>
+    <p>ADD POINTS TO YOUR ACCOUNT TO PURCHASE LICENCE KEY INSTANTLY.</p>
   </header>
 
-  <div class="panel-card">
-    <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
-    <div class="gcash-option">
-      <span class="gcash-label">GCash</span>
-      <span class="gcash-num">09933554796</span>
-      <i class="fas fa-check-circle check-purple"></i>
-    </div>
-    <div class="rate-note">
-      <i class="fas fa-info-circle"></i> Rate: 1 PHP = 1 Point  ·  Minimum purchase: 50 points
-    </div>
-  </div>
+  <div class="panel-card tu-card">
+    <h2 class="tu-title"><i class="tu-dot"></i> AMOUNT TO DEPOSIT</h2>
 
-  <div class="panel-card">
-    <h2><i class="fas fa-clock"></i> Points Amount</h2>
+    <div class="gcash-box">
+      <img class="gcash-img" src="/ASSETS/gcash.png" alt="GCash QR" onerror="this.style.display='none'">
+      <div class="gcash-line"><span>GCASH</span><b>09933554796</b></div>
+    </div>
+
     <div class="input-points">
-      <input type="number" value="100" placeholder="ENTER NUMBER OF POINTS">
-      <span>COINS</span>
+      <i class="fas fa-coins tu-coin"></i>
+      <input type="text" id="tuAmt" value="50" readonly aria-label="Selected amount">
+      <span>₱</span>
     </div>
-    <div class="quick-btns">
+    <div class="quick-btns tu-grid">
+      <button class="tu-chip active" data-a="50">50</button>
+      <button class="tu-chip" data-a="100">100</button>
+      <button class="tu-chip" data-a="500"><em class="best-tag">BEST</em>500</button>
+      <button class="tu-chip" data-a="1000">1000</button>
+      <button class="tu-chip" data-a="5000">5000</button>
     </div>
-  </div>
 
-  <div class="panel-card">
-    <h2><i class="fas fa-upload"></i> Proof of Payment</h2>
+    <h2 class="tu-title tu-sub"><i class="fas fa-upload"></i> UPLOAD PROOF (JPG OR PNG)</h2>
     <div class="upload-area">
       <i class="fas fa-image upload-icon"></i>
-      <p>Click or drag to upload screenshot</p>
-      <small>PNG, JPG up to 5MB</small>
+      <p>TAP TO UPLOAD YOUR GCASH PAYMENT PROOF</p>
+      <small>JPG OR PNG ONLY · UP TO 5MB</small>
     </div>
-  </div>
 
-  <div class="panel-card">
-    <h2>Order Summary</h2>
-    <div class="sum-row">
-      <span>Current Balance</span>
-      <span class="purple-txt">0 COINS</span>
-    </div>
-    <div class="sum-row">
-      <span>Points to Buy</span>
-      <span id="sumPts">—</span>
-    </div>
-    <div class="sum-row">
-      <span>Payment Method</span>
-      <span>GCash</span>
-    </div>
-    <div class="sum-row">
-      <span>Rate</span>
-      <span>₱01 Estimated 1 Coins  </span>
-    </div>
-    <div class="sum-row total-row">
-      <span>Total to Pay<br><small>PHP</small></span>
-      <span class="purple-txt" id="sumTotal">₱0</span>
-    </div>
-    <button class="btn btn-purple full-btn"><i class="fas fa-paper-plane"></i> Submit Request</button>
-    <p class="small-note">Points will be credited after admin review</p>
+    <button class="btn btn-purple full-btn" id="tuSubmit"><i class="fas fa-paper-plane"></i> SUBMIT</button>
   </div>
 </div>
 </body>
