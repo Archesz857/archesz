@@ -23,8 +23,8 @@ const PRODUCTS = [{
   plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
 }];
 const CONTACT = '@Archeszcom';
-// >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
-const APK_LINK = 'YOUR MEDIAFIRE LINK';
+ >> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
+const APK_LINK = 'https://www.mediafire.com/file/2810vl417npoylb/NO+SKIN+INJECTOR+V1.apk/file';
 // Product icon: shows your image (same size as the old icon). Falls back to the font icon if the image is missing.
 const pIcon = (p, cls = 'purple-icon') => p.img
   ? `<div class="menu-icon prod-img"><img src="${p.img}" alt="${p.name}" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fas ${p.icon}'}))"></div>`
