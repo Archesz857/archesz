@@ -47,7 +47,7 @@ const R = {
   async ping(b) { await rd('HSET', 'presence', await who(b), Date.now()); return {}; },
   async order(b) {
     const e = await who(b), pts = parseInt(b.pts) || 0;
-    if (pts < 50 || pts > 100000) bad('Minimum purchase is 50 points.');
+    if (pts < 50 || pts > 100000) bad('Minimum top-up is ₱50.');
     if (!b.receipt) bad('Please upload your payment screenshot.');
     const o = { id: 'ARC-' + rid(), email: e, pts, amount: pts, status: 'pending', ts: Date.now(), name: String(b.name || 'receipt.jpg').slice(0, 80), receipt: await saveImg(b.receipt), seen: false };
     await hset('orders', o.id, o); return { id: o.id };
@@ -55,7 +55,7 @@ const R = {
   async seen(b) { const e = await who(b); for (const o of await hall('orders')) if (o.email === e && o.status !== 'pending' && !o.seen) { o.seen = true; await hset('orders', o.id, o); } return {}; },
   async buy(b) {
     const e = await who(b), p = PLANS[b.pid], pl = p && p.plans[+b.i]; if (!pl) bad('Invalid plan.');
-    const u = await hget('users', e); if (u.coins < pl[1]) bad(`Not enough coins - you need ${pl[1] - u.coins} more.`);
+    const u = await hget('users', e); if (u.coins < pl[1]) bad(`Not enough wallet balance - you need ₱${pl[1] - u.coins} more.`);
     u.coins -= pl[1]; await hset('users', e, u);
     const pid = 'PRD-' + rid(); await hset('purchases', pid, { id: pid, email: e, product: p.name, plan: pl[0], pts: pl[1], ts: Date.now() });
     return { coins: u.coins, id: pid, plan: pl[0], pts: pl[1] };
@@ -71,7 +71,7 @@ const R = {
       const pu = await hget('purchases', String(b.share));
       if (!pu || pu.email !== e) bad('Order not found.');
       share = { pid: pu.id, email: e, product: pu.product, plan: pu.plan, payment: 'GCASH', status: 'DONE', icon: /^https?:\/\/[^\s"'<>]{4,200}$/.test(b.icon || '') ? b.icon : '' };
-      text = text || 'SHARED APK ORDER';
+      text = text || `USER: ${e} • APK: ${pu.product} • PAYMENT: GCASH VIA - DONE ✓ • DURATION: ${pu.plan}`;
     }
     if (!text && !b.img) bad('Type a message or attach an image.');
     const m = { id: 'M' + rid(5), email: e, from: 'user', text, img: await saveImg(b.img), share, orderId: String(b.orderId || '').slice(0, 20), orderTime: String(b.orderTime || '').slice(0, 40), ts: Date.now(), read: false };
@@ -100,7 +100,7 @@ const R = {
   async adm_cancel(b) { await adm(b); const o = await hget('orders', b.id); if (!o || o.status !== 'pending') bad('Order is no longer pending.'); Object.assign(o, { status: 'cancelled', seen: false }); await hset('orders', o.id, o); return {}; },
   async adm_add(b) {
     await adm(b); const email = String(b.email || '').trim().toLowerCase(), n = parseInt(b.coins) || 0, u = await hget('users', email);
-    if (!u) bad('No account with that Gmail.'); if (n < 1 || n > 1000000) bad('Enter coins to add.');
+    if (!u) bad('No account with that Gmail.'); if (n < 1 || n > 1000000) bad('Enter an amount to add.');
     u.coins += n; await hset('users', email, u);
     const id = 'ADM-' + rid(); await hset('orders', id, { id, email, pts: n, amount: 0, status: 'approved', manual: true, ts: Date.now(), approvedAt: Date.now(), seen: false }); return { coins: u.coins };
   },
