@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8b5cf6">
+<title>CHECKOUT — ARCHESZ OFFICIAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../DESIGNEDCSS/style.css">
+<script src="../SCRIPTJS/script.js" defer></script>
+</head>
+<body>
+<main class="wrap co-wrap">
+  <nav class="crumb"><a href="../BROWSESHOP/shop.html"><i class="fas fa-store"></i> STORE</a> <i class="fas fa-chevron-right"></i> <b id="coCrumb"></b></nav>
+  <section class="co-card">
+    <div class="co-hero"><video id="coVideo" src="/ASSETS/buy-video.mp4" autoplay muted loop playsinline preload="auto"></video><div class="co-shade"></div>
+      <div class="co-hero-txt"><h1 id="coTitle"></h1><div class="co-tags" id="coTags"></div></div></div>
+    <div class="gallery"><div id="coGallery" class="gal-track"></div><button id="gPrev" class="gal-btn l"><i class="fas fa-chevron-left"></i></button><button id="gNext" class="gal-btn r"><i class="fas fa-chevron-right"></i></button></div>
 
+    <h3 class="step"><i class="step-dot"></i> [01] DEPLOYMENT SPECIFICATIONS</h3>
+    <div class="spec"><div id="coSpec" class="spec-txt"></div><div class="spec-btns"><button id="specMore" class="btn btn-dark"><i class="fas fa-chevron-down"></i> SHOW MORE</button><button id="specFull" class="btn btn-dark"><i class="fas fa-expand"></i> FULL SCREEN</button></div></div>
+    <div class="mod-card"><div class="mod-ico"><i class="fas fa-puzzle-piece"></i></div><div><h4>MOD APK VERSION</h4><p>PRE-INJECTED MODIFIED APK. NO ROOT REQUIRED, SIMPLE INSTALL.</p></div><span class="mod-pill">EASY INSTALL</span></div>
+  </section>
+
+  <section class="co-card">
+    <h3 class="step"><i class="step-dot"></i> [02] CONFIGURE PARAMETERS</h3>
+    <div id="coPlans" class="co-plans"></div>
+  </section>
+
+  <section class="co-card wallet-card">
+    <div class="w-ico"><i class="fas fa-wallet"></i></div>
+    <small>AVAILABLE WALLET BALANCE</small>
+    <b id="coBal">₱0.00</b>
+    <a href="../BUYPOINTS/buypoints.html" class="btn btn-dark"><i class="fas fa-circle-plus"></i> ADD FUNDS TO WALLET</a>
+  </section>
+
+  <section class="co-card">
+    <h3 class="step"><i class="step-dot"></i> [03] PROTOCOL SUMMARY</h3>
+    <div class="sum-row"><span>PRODUCT</span><b id="sumProd"></b></div>
+    <div class="sum-row"><span>TYPE</span><b id="sumType" class="pp"></b></div>
+    <div class="sum-row"><span>DURATION</span><b id="sumDur" class="pp"></b></div>
+    <div class="sum-row"><span>BALANCE REMAINING</span><b id="sumLeft"></b></div>
+    <div class="total"><span>TOTAL CHECKOUT PRICE</span><b id="sumTotal"></b></div>
+    <button id="coBuy" class="btn btn-purple full-btn"><i class="fas fa-bolt"></i> CONFIRM &amp; BUY</button>
+    <div class="trust4"><div><i class="fas fa-shield-halved"></i><small>SECURE</small></div><div><i class="fas fa-bolt"></i><small>INSTANT</small></div><div><i class="fas fa-headset"></i><small>24/7 DESK</small></div><div><i class="fas fa-lock"></i><small>ENCRYPTED</small></div></div>
+  </section>
+</main>
+</body>
+</html>
