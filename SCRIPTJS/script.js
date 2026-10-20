@@ -15,13 +15,16 @@ function uploadReceiptDemo(file, max = 720) {
 }
 
 // ===== PRODUCTS (edit description / version / plans here) =====
-const ASSET = { bg: '/ASSETS/shop-bg.jpg', icon: '/ASSETS/apk-icon.png', done: '/ASSETS/done-icon.png', video: '/ASSETS/buy-video.mp4', gcash: '/ASSETS/gcash.png' };
+const ASSET = { bg: '/ASSETS/shop-bg.jpg', icon: '/ASSETS/apk-icon.png', done: '/ASSETS/done-icon.png', video: '/ASSETS/buy-video.mp4', gcash: '/ASSETS/gcash.png', logo: '/ASSETS/logo.png' };
 const PRODUCTS = [{
-  id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: ASSET.icon, cat: ['Android', 'Mobile', 'TOOLS'], icon: 'fa-syringe',
+  id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: ASSET.icon, platform: 'Android', type: 'MOD APK',
+  game: 'CALL OF DUTY ANDROID', banner: '/ASSETS/shot-1.jpg', shots: ['/ASSETS/shot-1.jpg', '/ASSETS/shot-2.jpg', '/ASSETS/shot-3.jpg'],
   tags: ['GARENA', 'LATEST VERSION', 'ARCHESZ V1'],
-  desc: 'CHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.',
-  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 100]]
+  short: 'MOD APK TO VIRTUAL APK. PREMIUM MOD EXPERIENCE BUILT WITH PERFORMANCE AND RELIABILITY IN MIND.',
+  desc: 'ARCHESZ V1 - MOD APK TO VIRTUAL APK\nANDROID - GARENA\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
+  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
 }];
+const money = (n) => '₱' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2 });
 const CONTACT = '@Archeszcom';
 // >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
 const APK_LINK = 'https://www.mediafire.com/file/2810vl417npoylb/NO+SKIN+INJECTOR+V1.apk/file';
@@ -95,7 +98,7 @@ function initFX() {
   const c = document.createElement('canvas'); c.id = 'fx'; document.body.prepend(c);
   const x = c.getContext('2d'); let w, h;
   const size = () => { w = c.width = innerWidth; h = c.height = innerHeight; }; size(); addEventListener('resize', size);
-  const P = Array.from({ length: 46 }, (_, i) => ({ c: ['20,184,184','94,234,212','45,212,212','153,246,228'][i % 4], x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.8 + .4, v: Math.random() * .35 + .1, a: Math.random() * .5 + .15, d: Math.random() * 6 }));
+  const P = Array.from({ length: 46 }, (_, i) => ({ c: ['139,92,246','196,181,253','167,139,250','221,214,254'][i % 4], x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.8 + .4, v: Math.random() * .35 + .1, a: Math.random() * .5 + .15, d: Math.random() * 6 }));
   (function draw(t) {
     x.clearRect(0, 0, w, h);
     P.forEach((p) => {
@@ -126,14 +129,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   const $$ = (s) => document.querySelectorAll(s);
   await boot();
 
-  // ---- TOP BALANCE BAR (tap = go to Top Up) ----
+  // ---- SITE HEADER (logo, wallet, menu) ----
   if (!$('#authForm') && document.body.dataset.role !== 'admin') {
-    const bar = document.createElement('div'); bar.className = 'coin-bar';
-    bar.innerHTML = '<a href="/BUYPOINTS/buypoints.html" class="coin-link" title="Top up"><i class="fas fa-coins"></i><b id="coinBal">0</b><span>+</span></a><button type="button" id="logoutBtn" title="Logout"><i class="fas fa-right-from-bracket"></i></button>';
-    document.body.appendChild(bar); countUp($('#coinBal'), S.coins);
+    const hd = document.createElement('header'); hd.className = 'site-header';
+    hd.innerHTML = `<a class="sh-brand" href="/HOMEPAGE/index.html"><img src="${ASSET.logo}" alt="" onerror="this.style.display='none'"><span>ARCHESZ <b>OFFICIAL</b></span></a>
+      <a class="sh-wallet" href="/BUYPOINTS/buypoints.html" title="Add funds"><i class="fas fa-wallet"></i><span>₱<b id="coinBal">0</b></span></a>
+      <button class="sh-burger" id="menuBtn" type="button" aria-label="Menu"><i class="fas fa-bars"></i></button>`;
+    const dr = document.createElement('nav'); dr.className = 'sh-drawer'; dr.hidden = true;
+    dr.innerHTML = `<a href="/HOMEPAGE/index.html"><i class="fas fa-house"></i> HOME</a><a href="/BROWSESHOP/shop.html"><i class="fas fa-store"></i> BROWSE CATALOG</a>
+      <a href="/BUYPOINTS/buypoints.html"><i class="fas fa-circle-plus"></i> ADD FUNDS</a><a href="/MYPOINTS/mypoints.html"><i class="fas fa-wallet"></i> MY WALLET</a>
+      <a href="/DONEBUY/donebuy.html"><i class="fas fa-circle-check"></i> DONE BUY</a><a href="/SUPPORT/support.html"><i class="fas fa-headset"></i> SUPPORT CENTER</a>
+      <a href="/FEEDBACK/feedback.html"><i class="fas fa-star"></i> FEEDBACKS</a><button type="button" id="logoutBtn"><i class="fas fa-right-from-bracket"></i> LOGOUT</button>`;
+    document.body.prepend(dr); document.body.prepend(hd); countUp($('#coinBal'), S.coins);
+    $('#menuBtn').addEventListener('click', () => { dr.hidden = !dr.hidden; $('#menuBtn i').className = dr.hidden ? 'fas fa-bars' : 'fas fa-xmark'; });
+    dr.addEventListener('click', (e) => { if (e.target.closest('a')) dr.hidden = true; });
     $('#logoutBtn').addEventListener('click', () => { localStorage.removeItem(TOK); location.href = '/AUTH/login.html'; });
     setInterval(() => api('ping', { quiet: true }), 30000);
+    if (!document.querySelector('.fab-chat') && !location.pathname.includes('SUPPORT')) { const f = document.createElement('a'); f.className = 'fab-chat'; f.href = '/SUPPORT/support.html'; f.innerHTML = '<i class="fas fa-comment-dots"></i>'; f.title = 'Support'; document.body.appendChild(f); }
   }
+  // scroll reveal + count-up
+  const rv = new IntersectionObserver((es) => es.forEach((x) => { if (!x.isIntersecting) return; x.target.classList.add('in'); x.target.querySelectorAll('.cnt').forEach((n) => countUp2(n)); if (x.target.classList.contains('cnt')) countUp2(x.target); rv.unobserve(x.target); }), { threshold: .15 });
+  const countUp2 = (n) => { if (n.dataset.done) return; n.dataset.done = 1; const to = parseFloat(n.dataset.to), dec = +(n.dataset.dec || 0), t0 = performance.now(); const st = (z) => { const k = Math.min((z - t0) / 1200, 1), v = to * (1 - Math.pow(1 - k, 3)); n.textContent = v.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (n.dataset.suf || ''); if (k < 1) requestAnimationFrame(st); }; requestAnimationFrame(st); setTimeout(() => (n.textContent = to.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (n.dataset.suf || '')), 1500); };
+  $$('.reveal').forEach((x) => (reduced ? x.classList.add('in') : rv.observe(x)));
+  // show/hide password
+  $$('.eye').forEach((b) => b.addEventListener('click', () => { const i = b.parentElement.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; b.querySelector('i').className = i.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'; }));
 
   // ---- AUTH (login / register with referral code) ----
   if ($('#authForm')) {
@@ -143,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       $$('[data-reg]').forEach((x) => (x.hidden = mode !== 'reg'));
       $('#authTitle').textContent = mode === 'reg' ? 'Create account' : 'Welcome back';
       $('#authSub').textContent = mode === 'reg' ? 'Enter your referral code to register' : 'Login with your Gmail account';
-      $('#authBtn').textContent = mode === 'reg' ? 'Register' : 'Login';
+      $('#authBtn').innerHTML = mode === 'reg' ? '<i class="fas fa-user-plus"></i> CREATE ACCOUNT' : '<i class="fas fa-shield-halved"></i> SIGN IN';
       $$('#authTabs button').forEach((b) => b.classList.toggle('active', b.dataset.m === mode));
       $('#passErr').hidden = true;
     };
@@ -160,60 +179,79 @@ document.addEventListener('DOMContentLoaded', async () => {
     sync();
   }
 
-  // ---- SHOP: products ----
-  const filterBtns = $$('.filter-btn');
+  // ---- HOME: arsenal card ----
+  const openProduct = (id) => go('/PRODUCT/checkout.html?p=' + id);
+  if ($('#homeCatalog')) {
+    $('#homeCatalog').innerHTML = PRODUCTS.map((p) => `
+      <article class="arsenal-card reveal" data-open="${p.id}">
+        <div class="ac-shot" style="background-image:url('${p.banner}')"><span class="ac-badge"><i class="g-dot"></i> IN STOCK</span><img class="ac-icon" src="${p.img}" alt="" onerror="this.style.display='none'"></div>
+        <div class="ac-body"><h3>${p.name}</h3>
+          <div class="ac-tags"><span>PREMIUM</span><span>INSTANT</span><span>24/7</span></div>
+          <div class="ac-foot"><div><small>STARTING</small><b>${money(Math.min(...p.plans.map((x) => x[1])))}</b></div><button class="btn btn-dark ac-btn" data-open="${p.id}"><i class="fas fa-key"></i> GET KEY</button></div></div>
+      </article>`).join('');
+    $('#homeCatalog').addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) openProduct(o.dataset.open); });
+    $$('.reveal').forEach((x) => !reduced && !x.classList.contains('in') && rv.observe(x));
+  }
+
+  // ---- CATALOG (Browse products) ----
   if ($('#prodList')) {
-    let cat = 'All', q = '';
-    const money = (n) => '₱' + n.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    const st = { game: '', plat: '', q: '' };
     const render = () => {
-      const rows = PRODUCTS.filter((p) => (cat === 'All' || p.cat.includes(cat)) && p.name.toLowerCase().includes(q));
+      const rows = PRODUCTS.filter((p) => (!st.game || p.game === st.game) && (!st.plat || p.platform === st.plat) && (p.name + p.game).toLowerCase().includes(st.q));
+      $('#showing').innerHTML = `SHOWING <b>${new Set(rows.map((p) => p.game)).size}</b> GAME · <b>${rows.length}</b> PRODUCT AVAILABLE`;
+      $('#chips').innerHTML = [st.game && `<button class="chip-x" data-clr="game">GAME: ${st.game} <i class="fas fa-xmark"></i></button>`, st.plat && `<button class="chip-x" data-clr="plat">PLATFORM: ${st.plat} <i class="fas fa-xmark"></i></button>`].filter(Boolean).join('');
       $('#prodList').innerHTML = rows.length ? rows.map((p) => `
-        <div class="gh-card" data-id="${p.id}">
-          <div class="gh-banner" style="background-image:url('${ASSET.bg}')">
-            <img class="gh-appicon" src="${p.img}" alt="${p.name}" onerror="this.style.visibility='hidden'">
-            <div class="gh-banner-txt"><h2>${p.title}</h2><div class="gh-and"><span class="gh-and-ico"><i class="fab fa-android"></i></span><b>ANDROID VERSION</b></div></div>
-          </div>
-          <div class="gh-body">
-            <h3 class="gh-name">${p.name}</h3>
-            <div class="gh-tags"><span class="tg tg-mod"><i class="fas fa-puzzle-piece"></i> MOD APK TO VIRTUAL APK</span><span class="tg tg-and"><i class="fab fa-android"></i> ANDROID</span><span class="tg tg-stock"><i class="g-dot"></i><i class="fas fa-circle-check"></i> IN STOCK</span></div>
-            <div class="gh-tags">${p.tags.map((x) => `<span class="tg tg-chip">${x}</span>`).join('')}</div>
-            <div class="gh-price">${money(Math.min(...p.plans.map((x) => x[1])))} — ${money(Math.max(...p.plans.map((x) => x[1])))} <small>PER KEY</small></div>
-            <button class="btn btn-purple full-btn gh-buy" data-buy><i class="fas fa-bolt"></i> BUY NOW</button>
-          </div>
-        </div>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>No products here yet.</p></div>`;
+        <article class="game-card" data-open="${p.id}">
+          <div class="gc-banner" style="background-image:url('${p.banner}')"></div>
+          <div class="gc-body">
+            <div class="gc-head"><img src="${p.img}" alt="" onerror="this.style.display='none'"><h3>${p.game}</h3></div>
+            <div class="gc-meta"><span>1 VERSION AVAILABLE</span><i class="fab fa-android gc-and"></i></div>
+            <p class="gc-desc">${p.short}</p>
+            <button class="btn btn-dark full-btn" data-open="${p.id}"><i class="fas fa-eye"></i> VIEW ALL VERSIONS <i class="fas fa-arrow-right"></i></button>
+          </div></article>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>NO PRODUCTS MATCH YOUR FILTERS.</p></div>`;
     };
-    filterBtns.forEach((b) => b.addEventListener('click', () => { filterBtns.forEach((x) => x.classList.remove('active')); b.classList.add('active'); cat = b.textContent.trim(); render(); }));
-    $('.search-box input').addEventListener('input', (e) => { q = e.target.value.toLowerCase(); render(); });
-    $('#prodList').addEventListener('click', (e) => {
-      if (!e.target.closest('[data-buy]')) return;
-      const p = PRODUCTS.find((x) => x.id === e.target.closest('.gh-card').dataset.id); let sel = 0;
-      const m = modal(`<video class="buy-video" src="${ASSET.video}" autoplay muted loop playsinline preload="auto"></video><div class="buy-shade"></div>
-        <div class="buy-inner">
-          <img class="buy-icon" src="${p.img}" alt="" onerror="this.style.display='none'">
-          <h2>${p.title}</h2>
-          <p class="buy-desc">${p.desc}</p>
-          <p class="small-note" style="margin:0 0 12px">BALANCE: <b class="purple-txt" style="font-size:16px">${loadDB().balance.toLocaleString()} PTS</b></p>
-          <div class="plan-list">${p.plans.map((pl, i) => `<button class="plan-btn${i ? '' : ' active'}" data-i="${i}">${pl[0] === 'PERMANENT' ? '<em class="best-tag">BEST</em>' : ''}<span>${money(pl[1])} — ${pl[0]}</span></button>`).join('')}</div>
-          <button class="btn btn-purple full-btn" data-confirm><i class="fas fa-bolt"></i> CONFIRM &amp; BUY</button><button class="link-btn" data-close>CANCEL</button>
-        </div>`);
-      m.el.classList.add('buy-modal'); const v = m.el.querySelector('video'); v.muted = true; v.play().catch(() => {});
-      m.el.addEventListener('click', (ev) => {
-        const pb = ev.target.closest('.plan-btn');
-        if (pb) { sel = +pb.dataset.i; m.el.querySelectorAll('.plan-btn').forEach((x) => x.classList.toggle('active', x === pb)); }
-        if (ev.target.closest('[data-confirm]')) {
-          const pl = p.plans[sel], btn = ev.target.closest('[data-confirm]'); btn.disabled = true;
-          api('buy', { pid: p.id, i: sel }).then((j) => {
-            btn.disabled = false; if (!j.ok) return toast(j.err);
-            S.coins = j.coins; setCoins(); m.close(); api('me').then((r) => r.ok && (S.purchases = r.purchases));
-            const d = modal(`<img class="done-ico" src="${ASSET.done}" alt="DONE"><h2 class="claim-title">ORDER COMPLETE</h2>
-              <div class="admin-say"><b>ADMIN:</b> THANKS FOR PURCHASING LICENCE KEYS, ${escH(pl[0])}.</div>
-              <button class="btn btn-purple full-btn" data-view><i class="fas fa-receipt"></i> VIEW ORDER</button>`);
-            d.el.classList.add('burst'); d.el.addEventListener('click', (x) => { if (x.target.closest('[data-view]')) go('/DONEBUY/donebuy.html'); });
-          });
-        }
+    $('#fGame').addEventListener('change', (e) => { st.game = e.target.value; render(); });
+    $('#fPlat').addEventListener('change', (e) => { st.plat = e.target.value; render(); });
+    $('#fSearch').addEventListener('input', (e) => { st.q = e.target.value.toLowerCase(); render(); });
+    $('#fClear').addEventListener('click', () => { st.game = st.plat = st.q = ''; $('#fGame').value = $('#fPlat').value = $('#fSearch').value = ''; render(); });
+    $('#chips').addEventListener('click', (e) => { const x = e.target.closest('[data-clr]'); if (!x) return; st[x.dataset.clr] = ''; (x.dataset.clr === 'game' ? $('#fGame') : $('#fPlat')).value = ''; render(); });
+    $('#tabAcc').addEventListener('click', () => toast('ACCOUNTS FOR SALE - COMING SOON.'));
+    $('#prodList').addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) openProduct(o.dataset.open); });
+    render();
+  }
+
+  // ---- CHECKOUT (product page: gallery, plans, wallet, summary) ----
+  if ($('#coPlans')) {
+    const p = PRODUCTS.find((x) => x.id === new URLSearchParams(location.search).get('p')) || PRODUCTS[0]; let sel = p.plans.length - 1;
+    $('#coCrumb').textContent = p.name; $('#coTitle').textContent = p.name; document.title = 'CHECKOUT — ' + p.name;
+    $('#coTags').innerHTML = `<span class="tg tg-and"><i class="fab fa-android"></i> ${p.platform.toUpperCase()}</span><span class="tg tg-stock"><i class="g-dot"></i> IN STOCK</span>` + p.tags.map((x) => `<span class="tg tg-chip">${x}</span>`).join('');
+    $('#coGallery').innerHTML = p.shots.map((s) => `<img src="${s}" alt="${p.name}" loading="lazy">`).join('');
+    const gl = $('#coGallery'); $('#gPrev').addEventListener('click', () => gl.scrollBy({ left: -gl.clientWidth, behavior: 'smooth' })); $('#gNext').addEventListener('click', () => gl.scrollBy({ left: gl.clientWidth, behavior: 'smooth' }));
+    $('#coSpec').innerHTML = p.desc.split('\n').map((l) => `<p>${l}</p>`).join('');
+    $('#specMore').addEventListener('click', () => { const s = $('#coSpec'); s.classList.toggle('open'); $('#specMore').innerHTML = s.classList.contains('open') ? '<i class="fas fa-chevron-up"></i> SHOW LESS' : '<i class="fas fa-chevron-down"></i> SHOW MORE'; });
+    $('#specFull').addEventListener('click', () => modal(`<h2>${p.name}</h2><div class="spec-full">${p.desc.split('\n').map((l) => `<p>${l}</p>`).join('')}</div><button class="btn btn-dark full-btn" data-close>CLOSE</button>`));
+    $('#coPlans').innerHTML = p.plans.map((pl, i) => `<button class="co-plan" data-i="${i}"><i class="fas fa-circle-check co-chk"></i><span class="cp-dur">${pl[0]}</span><b class="cp-price">${money(pl[1])}</b>${pl[0] === 'PERMANENT' ? '<em class="best-tag">BEST</em>' : ''}<small><i class="g-dot"></i> IN STOCK</small></button>`).join('');
+    const upd = () => {
+      const pl = p.plans[sel], bal = loadDB().balance, left = bal - pl[1];
+      $$('.co-plan').forEach((x) => x.classList.toggle('active', +x.dataset.i === sel));
+      $('#coBal').textContent = money(bal); $('#sumProd').textContent = p.name; $('#sumType').textContent = p.type; $('#sumDur').textContent = pl[0]; $('#sumTotal').textContent = money(pl[1]);
+      const r = $('#sumLeft'); r.textContent = left >= 0 ? money(left) : `-${money(-left)} SHORT`; r.className = left >= 0 ? 'ok' : 'bad';
+      const b = $('#coBuy'); b.disabled = left < 0; b.innerHTML = left >= 0 ? '<i class="fas fa-bolt"></i> CONFIRM &amp; BUY' : '<i class="fas fa-ban"></i> INSUFFICIENT BALANCE';
+    };
+    $('#coPlans').addEventListener('click', (e) => { const x = e.target.closest('.co-plan'); if (x) { sel = +x.dataset.i; upd(); } });
+    $('#coBuy').addEventListener('click', () => {
+      const pl = p.plans[sel], btn = $('#coBuy'); btn.disabled = true;
+      api('buy', { pid: p.id, i: sel }).then((j) => {
+        if (!j.ok) { upd(); return toast(j.err); }
+        S.coins = j.coins; setCoins(); upd(); api('me').then((r) => r.ok && (S.purchases = r.purchases));
+        const d = modal(`<img class="done-ico" src="${ASSET.done}" alt="DONE"><h2 class="claim-title">ORDER COMPLETE</h2>
+          <div class="admin-say"><b>ADMIN:</b> THANKS FOR PURCHASING LICENCE KEYS, ${escH(pl[0])}.</div>
+          <button class="btn btn-purple full-btn" data-view><i class="fas fa-receipt"></i> VIEW ORDER</button>`);
+        d.el.classList.add('burst'); d.el.addEventListener('click', (x) => { if (x.target.closest('[data-view]')) go('/DONEBUY/donebuy.html'); });
       });
     });
-    render();
+    const v = $('#coVideo'); if (v) { v.muted = true; v.play().catch(() => {}); }
+    api('me', { quiet: true }).then(() => upd()); upd();
   }
 
   // ---- CREATE TOP-UP (fixed amounts, GCash, upload proof, submit) ----
@@ -236,13 +274,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const btn = e.currentTarget; if (!proof) { area.classList.add('need'); area.scrollIntoView({ behavior: 'smooth', block: 'center' }); return toast('UPLOAD YOUR PROOF (JPG OR PNG) FIRST.'); }
       btn.disabled = true; const j = await api('order', { pts: amt, name: proofName, receipt: proof }); btn.disabled = false;
       if (!j.ok) return alert(j.err);
-      toast('REQUEST SENT! POINTS WILL BE CREDITED AFTER ADMIN REVIEW.'); setTimeout(() => go('../MYPOINTS/mypoints.html'), 1300);
+      toast('REQUEST SENT! FUNDS WILL BE ADDED TO YOUR WALLET AFTER ADMIN REVIEW.'); setTimeout(() => go('../MYPOINTS/mypoints.html'), 1300);
     });
   }
 
   // ---- HOME: live balance + tilt ----
   const mpSub = $('.menu-card[href*="mypoints"] p');
-  if (mpSub) mpSub.textContent = 'Balance: ' + loadDB().balance.toLocaleString() + ' pts';
+  if (mpSub) mpSub.textContent = 'Wallet: ' + money(loadDB().balance);
   const hero = $('.hero-card:not(.bal-card)');
   if (hero && matchMedia('(hover:hover)').matches && !reduced) {
     hero.addEventListener('mousemove', (e) => { const r = hero.getBoundingClientRect(); const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5; hero.style.transform = `perspective(900px) rotateY(${px * 5}deg) rotateX(${-py * 5}deg) translateY(-4px)`; });
@@ -260,8 +298,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="hist-item" style="animation-delay:${i * 70}ms">
           <div class="menu-icon ${{ approved: 'green-icon', cancelled: 'red-icon' }[h.status] || 'gold-icon'}"><i class="fas ${{ approved: 'fa-circle-check', cancelled: 'fa-circle-xmark' }[h.status] || 'fa-clock'}"></i></div>
           <div class="hist-info"><h3>${h.manual ? 'Added by admin' : 'Top-up via GCash'}</h3><p>${h.id} · ${fmtDate(h.ts)}</p></div>
-          <div class="hist-right"><span class="hist-pts">+${h.pts.toLocaleString()}</span><span class="pill ${h.status}">${h.status}</span></div>
-        </div>`).join('') : `<div class="empty-state"><i class="fas fa-inbox"></i><p>No ${f === 'all' ? '' : f + ' '}history yet.<br>Buy points to get started.</p></div>`;
+          <div class="hist-right"><span class="hist-pts">+₱${h.pts.toLocaleString()}</span><span class="pill ${h.status}">${h.status}</span></div>
+        </div>`).join('') : `<div class="empty-state"><i class="fas fa-inbox"></i><p>No ${f === 'all' ? '' : f + ' '}history yet.<br>Add funds to get started.</p></div>`;
     };
     $$('#histTabs .filter-btn').forEach((b) => b.addEventListener('click', () => { f = b.dataset.f; render(); }));
     $('#resetDemo')?.remove();
@@ -338,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>` : `
       <div class="hist-item" style="animation-delay:${i * 70}ms">
         <div class="menu-icon blue-icon"><i class="fas fa-check-circle"></i></div>
-        <div class="hist-info"><h3>${r.topup.pts.toLocaleString()} PTS TOP-UP</h3><p>ORDER ${r.topup.id} · ${fmtDate(r.topup.approvedAt || r.topup.ts)}</p></div>
+        <div class="hist-info"><h3>₱${r.topup.pts.toLocaleString()} TOP-UP</h3><p>ORDER ${r.topup.id} · ${fmtDate(r.topup.approvedAt || r.topup.ts)}</p></div>
         <div class="hist-right"><span class="pill approved">completed</span></div>
       </div>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>NO COMPLETED ORDERS YET.<br>APPROVED PURCHASES SHOW UP HERE.</p></div>`;
     $('#doneList').addEventListener('click', async (e) => {
@@ -364,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const ok = n.status === 'approved';
       modal(`<div class="result-ico ${ok ? 'ok' : 'no'}"><i class="fas ${ok ? 'fa-circle-check' : 'fa-circle-xmark'}"></i></div>
         <h2>${ok ? 'YOUR ORDER APPROVED✅' : 'YOUR ORDER CANCELLED❌'}</h2>
-        <p class="small-note">${ok ? `+${n.pts.toLocaleString()} Coins added to your balance` : `Order ${n.id} was cancelled`}</p>
+        <p class="small-note">${ok ? `+₱${n.pts.toLocaleString()} added to your wallet` : `Order ${n.id} was cancelled`}</p>
         <p class="small-note">For more Inquiries: <b class="text-green">${CONTACT}</b></p>
         <button class="btn btn-purple full-btn" data-close>OK</button>`,
         () => { api('seen', { quiet: true }); });
