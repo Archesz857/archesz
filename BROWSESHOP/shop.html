@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARCHESZ STORE — Shop</title>
+<meta name="theme-color" content="#8b5cf6">
+<title>ARCHESZ OFFICIAL — Browse Products</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -11,24 +12,23 @@
 <script src="../SCRIPTJS/script.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <header class="shop-header">
-    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>ARCHESZ STORE</h1>
-    <p>Premium cheat and injector</p>
-  </header>
-  <div class="search-box">
-    <i class="fas fa-search"></i>
-    <input type="text" placeholder="Search products…">
+<main class="wrap">
+  <section class="store-banner reveal" style="background-image:url('/ASSETS/shop-bg.jpg')"><h1>STORE</h1><p>PREMIUM GAME ENHANCEMENT TOOLS &amp; ACCOUNTS</p></section>
+  <h2 class="page-h"><i class="fas fa-store"></i> BROWSE PRODUCTS</h2>
+  <p class="page-sub">SELECT YOUR GAME AND PLATFORM - INSTANT KEY DELIVERY AFTER PURCHASE</p>
+  <div class="tabs2"><button class="tab2 active"><i class="fas fa-gamepad"></i> GAME KEYS &amp; SERVICES <em>1</em></button><button class="tab2" id="tabAcc"><i class="fas fa-id-card"></i> ACCOUNTS FOR SALE <em>0</em></button></div>
+  <div class="filter-box">
+    <label><i class="fas fa-gamepad"></i> GAME</label>
+    <select id="fGame" class="sel"><option value="">ALL GAMES</option><option>CALL OF DUTY ANDROID</option></select>
+    <label><i class="fas fa-mobile-screen"></i> PLATFORM</label>
+    <select id="fPlat" class="sel"><option value="">SELECT DEVICE</option><option>Android</option><option>iOS</option></select>
+    <label><i class="fas fa-magnifying-glass"></i> SEARCH</label>
+    <div class="search-box"><i class="fas fa-search"></i><input id="fSearch" type="text" placeholder="Search products…"></div>
+    <button class="btn btn-cancel" id="fClear"><i class="fas fa-circle-xmark"></i> CLEAR ALL</button>
   </div>
-  <div class="filter-btns">
-    <button class="filter-btn active">All</button>
-    <button class="filter-btn">iOS</button>
-    <button class="filter-btn">Mobile</button>
-    <button class="filter-btn">Android</button>
-    <button class="filter-btn">TOOLS</button>
-  </div>
+  <div id="chips" class="chips"></div>
+  <p id="showing" class="showing"></p>
   <div id="prodList"></div>
-</div>
+</main>
 </body>
 </html>
