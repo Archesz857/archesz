@@ -15,15 +15,25 @@ function uploadReceiptDemo(file, max = 720) {
 }
 
 // ===== PRODUCTS (edit description / version / plans here) =====
-const ASSET = { bg: '/ASSETS/shop-bg.jpg', icon: '/ASSETS/apk-icon.png', done: '/ASSETS/done-icon.png', video: '/ASSETS/buy-video.mp4', gcash: '/ASSETS/gcash.png', logo: '/ASSETS/logo.png' };
-const PRODUCTS = [{
-  id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: ASSET.icon, platform: 'Android', type: 'MOD APK',
+const ASSET = { bg: '/ASSETS/shop-bg.jpg', icon: '/ASSETS/shop-01.png', done: '/ASSETS/done-icon.png', video: '/ASSETS/buy-video.mp4', store: '/ASSETS/store.mp4', gcash: '/ASSETS/gcash.png', logo: '/ASSETS/homepage-icon.png', login: '/ASSETS/login.png' };
+const PRODUCTS = [
+{
+  id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: '/ASSETS/shop-01.png', platform: 'Android', type: 'MOD APK',
   game: 'CALL OF DUTY ANDROID', banner: '/ASSETS/shot-1.jpg', shots: ['/ASSETS/shot-1.jpg', '/ASSETS/shot-2.jpg', '/ASSETS/shot-3.jpg'],
   tags: ['GARENA', 'LATEST VERSION', 'ARCHESZ V1'],
   short: 'MOD APK TO VIRTUAL APK. PREMIUM MOD EXPERIENCE BUILT WITH PERFORMANCE AND RELIABILITY IN MIND.',
   desc: 'ARCHESZ V1 - MOD APK TO VIRTUAL APK\nANDROID - GARENA\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
   plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
-}];
+},
+{
+  id: 'archesz-v2', name: 'ARCHESZ V2', title: 'ARCHESZ V2', version: 'V2', img: '/ASSETS/shop-02.png', platform: 'Android', type: 'MOD APK',
+  game: 'MOBILE LEGENDS ANDROID', banner: '/ASSETS/shot-2.jpg', shots: ['/ASSETS/shot-2.jpg', '/ASSETS/shot-3.jpg', '/ASSETS/shot-1.jpg'],
+  tags: ['MLBB', 'LATEST VERSION', 'ARCHESZ V2'],
+  short: 'MOD APK TO VIRTUAL APK. SMOOTH, STABLE AND EASY TO INSTALL ON ANDROID.',
+  desc: 'ARCHESZ V2 - MOD APK TO VIRTUAL APK\nANDROID - MOBILE LEGENDS\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
+  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
+}
+];
 const money = (n) => '₱' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2 });
 const CONTACT = '@Archeszcom';
 // >>> PASTE YOUR MEDIAFIRE LINK HERE (example: https://www.mediafire.com/file/xxxx/ARCHESZ.apk/file)
@@ -87,27 +97,8 @@ function countUp(el, to, ms = 900) {
 }
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Floating neon particles background
-function initFX() {
-  const au = document.createElement('div'); au.className = 'aurora'; au.innerHTML = '<i></i><i></i><i></i><i></i>'; document.body.prepend(au);
-  if (matchMedia('(hover:hover)').matches && !reduced) {
-    const cg = document.createElement('div'); cg.className = 'cursor-glow'; document.body.prepend(cg);
-    addEventListener('pointermove', (e) => { cg.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; });
-  }
-  if (reduced) return;
-  const c = document.createElement('canvas'); c.id = 'fx'; document.body.prepend(c);
-  const x = c.getContext('2d'); let w, h;
-  const size = () => { w = c.width = innerWidth; h = c.height = innerHeight; }; size(); addEventListener('resize', size);
-  const P = Array.from({ length: 46 }, (_, i) => ({ c: ['139,92,246','196,181,253','167,139,250','221,214,254'][i % 4], x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.8 + .4, v: Math.random() * .35 + .1, a: Math.random() * .5 + .15, d: Math.random() * 6 }));
-  (function draw(t) {
-    x.clearRect(0, 0, w, h);
-    P.forEach((p) => {
-      p.y -= p.v; p.x += Math.sin(t / 1800 + p.d) * .25; if (p.y < -5) { p.y = h + 5; p.x = Math.random() * w; }
-      x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fillStyle = `rgba(${p.c},${p.a})`; x.shadowColor = `rgb(${p.c})`; x.shadowBlur = 10; x.fill();
-    });
-    requestAnimationFrame(draw);
-  })(0);
-}
+// (particles / aurora / cursor glow removed on purpose: they made the site laggy)
+function initFX() {}
 
 // Button ripple + page transitions + hero tilt
 document.addEventListener('click', (e) => {
@@ -129,24 +120,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   const $$ = (s) => document.querySelectorAll(s);
   await boot();
 
-  // ---- SITE HEADER (logo, wallet, menu) ----
+  // ---- SITE HEADER + SIDEBAR ----
   if (!$('#authForm') && document.body.dataset.role !== 'admin') {
+    const ini = (S.email || 'GU').slice(0, 2).toUpperCase();
+    const brand = `<a class="sh-brand" href="/HOMEPAGE/index.html"><img src="${ASSET.logo}" alt="" onerror="this.style.display='none'"><span class="sh-name"><b>ARCH<em>ESZ</em></b><small>OFFICIAL</small></span></a>`;
     const hd = document.createElement('header'); hd.className = 'site-header';
-    hd.innerHTML = `<a class="sh-brand" href="/HOMEPAGE/index.html"><img src="${ASSET.logo}" alt="" onerror="this.style.display='none'"><span>ARCHESZ <b>OFFICIAL</b></span></a>
-      <a class="sh-wallet" href="/BUYPOINTS/buypoints.html" title="Add funds"><i class="fas fa-wallet"></i><span>₱<b id="coinBal">0</b></span></a>
-      <button class="sh-burger" id="menuBtn" type="button" aria-label="Menu"><i class="fas fa-bars"></i></button>`;
-    const dr = document.createElement('nav'); dr.className = 'sh-drawer'; dr.hidden = true;
-    dr.innerHTML = `<a href="/HOMEPAGE/index.html"><i class="fas fa-house"></i> HOME</a><a href="/BROWSESHOP/shop.html"><i class="fas fa-store"></i> BROWSE CATALOG</a>
-      <a href="/BUYPOINTS/buypoints.html"><i class="fas fa-circle-plus"></i> ADD FUNDS</a><a href="/MYPOINTS/mypoints.html"><i class="fas fa-wallet"></i> MY WALLET</a>
-      <a href="/DONEBUY/donebuy.html"><i class="fas fa-circle-check"></i> DONE BUY</a><a href="/SUPPORT/support.html"><i class="fas fa-headset"></i> SUPPORT CENTER</a>
-      <a href="/FEEDBACK/feedback.html"><i class="fas fa-star"></i> FEEDBACKS</a><button type="button" id="logoutBtn"><i class="fas fa-right-from-bracket"></i> LOGOUT</button>`;
-    document.body.prepend(dr); document.body.prepend(hd); countUp($('#coinBal'), S.coins);
-    $('#menuBtn').addEventListener('click', () => { dr.hidden = !dr.hidden; $('#menuBtn i').className = dr.hidden ? 'fas fa-bars' : 'fas fa-xmark'; });
-    dr.addEventListener('click', (e) => { if (e.target.closest('a')) dr.hidden = true; });
+    hd.innerHTML = `${brand}<a class="sh-avatar" href="/MYPOINTS/mypoints.html" title="My wallet">${escH(ini)}</a><button class="sh-burger" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>`;
+    const here = location.pathname.toLowerCase(), links = [['/HOMEPAGE/index.html', 'fa-house', 'HOME'], ['/BROWSESHOP/shop.html', 'fa-store', 'BROWSE CATALOG'], ['/BUYPOINTS/buypoints.html', 'fa-circle-plus', 'ADD FUNDS'], ['/MYPOINTS/mypoints.html', 'fa-wallet', 'MY WALLET'], ['/DONEBUY/donebuy.html', 'fa-circle-check', 'DONE BUY'], ['/SUPPORT/support.html', 'fa-headset', 'SUPPORT CENTER'], ['/FEEDBACK/feedback.html', 'fa-star', 'FEEDBACKS']];
+    const ov = document.createElement('div'); ov.className = 'sb-overlay';
+    const sb = document.createElement('aside'); sb.className = 'sidebar'; sb.setAttribute('aria-hidden', 'true');
+    sb.innerHTML = `<div class="sb-head">${brand}<button type="button" class="sb-x" id="sbClose" aria-label="Close"><i class="fas fa-xmark"></i></button></div>
+      <div class="sb-user"><div class="sb-av">${escH(ini)}</div><div><b class="keep-case">${escH(S.email || 'GUEST')}</b><small>WALLET ₱<span id="coinBal">0</span></small></div></div>
+      <a class="sb-add" href="/BUYPOINTS/buypoints.html"><i class="fas fa-circle-plus"></i> ADD FUNDS</a>
+      <nav class="sb-nav">${links.map((l, i) => `<a style="--i:${i}" class="${here.includes(l[0].toLowerCase().split('/')[1]) ? 'on' : ''}" href="${l[0]}"><i class="fas ${l[1]}"></i><span>${l[2]}</span><i class="fas fa-chevron-right sb-arr"></i></a>`).join('')}</nav>
+      <button type="button" id="logoutBtn" class="sb-out"><i class="fas fa-right-from-bracket"></i> LOGOUT</button>`;
+    document.body.prepend(sb); document.body.prepend(ov); document.body.prepend(hd); countUp($('#coinBal'), S.coins);
+    const setSb = (o) => { document.body.classList.toggle('sb-open', o); sb.setAttribute('aria-hidden', !o); $('#menuBtn').setAttribute('aria-expanded', o); document.documentElement.style.overflow = o ? 'hidden' : ''; };
+    $('#menuBtn').addEventListener('click', () => setSb(!document.body.classList.contains('sb-open')));
+    $('#sbClose').addEventListener('click', () => setSb(false)); ov.addEventListener('click', () => setSb(false));
+    addEventListener('keydown', (e) => e.key === 'Escape' && setSb(false));
     $('#logoutBtn').addEventListener('click', () => { localStorage.removeItem(TOK); location.href = '/AUTH/login.html'; });
     setInterval(() => api('ping', { quiet: true }), 30000);
-    if (!document.querySelector('.fab-chat') && !location.pathname.includes('SUPPORT')) { const f = document.createElement('a'); f.className = 'fab-chat'; f.href = '/SUPPORT/support.html'; f.innerHTML = '<i class="fas fa-comment-dots"></i>'; f.title = 'Support'; document.body.appendChild(f); }
+    if (!location.pathname.includes('SUPPORT')) { const f = document.createElement('a'); f.className = 'fab-chat'; f.href = '/SUPPORT/support.html'; f.innerHTML = '<i class="fas fa-comment-dots"></i>'; f.title = 'Support'; document.body.appendChild(f); }
   }
+  // play videos only while visible (saves battery / lag)
+  const vio = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause())), { threshold: .05 });
+  $$('video').forEach((v) => { v.muted = true; vio.observe(v); });
   // scroll reveal + count-up
   const rv = new IntersectionObserver((es) => es.forEach((x) => { if (!x.isIntersecting) return; x.target.classList.add('in'); x.target.querySelectorAll('.cnt').forEach((n) => countUp2(n)); if (x.target.classList.contains('cnt')) countUp2(x.target); rv.unobserve(x.target); }), { threshold: .15 });
   const countUp2 = (n) => { if (n.dataset.done) return; n.dataset.done = 1; const to = parseFloat(n.dataset.to), dec = +(n.dataset.dec || 0), t0 = performance.now(); const st = (z) => { const k = Math.min((z - t0) / 1200, 1), v = to * (1 - Math.pow(1 - k, 3)); n.textContent = v.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (n.dataset.suf || ''); if (k < 1) requestAnimationFrame(st); }; requestAnimationFrame(st); setTimeout(() => (n.textContent = to.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (n.dataset.suf || '')), 1500); };
@@ -182,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- HOME: arsenal card ----
   const openProduct = (id) => go('/PRODUCT/checkout.html?p=' + id);
   if ($('#homeCatalog')) {
+    if ($('#homeChips')) $('#homeChips').innerHTML = `<button class="chip active"><i class="fas fa-table-cells"></i> ALL GAMES</button>` + PRODUCTS.map((p) => `<button class="chip" data-open="${p.id}"><i class="fas fa-gamepad"></i> ${p.name}</button>`).join('');
     $('#homeCatalog').innerHTML = PRODUCTS.map((p) => `
       <article class="arsenal-card reveal" data-open="${p.id}">
         <div class="ac-shot" style="background-image:url('${p.banner}')"><span class="ac-badge"><i class="g-dot"></i> IN STOCK</span><img class="ac-icon" src="${p.img}" alt="" onerror="this.style.display='none'"></div>
@@ -210,6 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <button class="btn btn-dark full-btn" data-open="${p.id}"><i class="fas fa-eye"></i> VIEW ALL VERSIONS <i class="fas fa-arrow-right"></i></button>
           </div></article>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>NO PRODUCTS MATCH YOUR FILTERS.</p></div>`;
     };
+    $('#fGame').innerHTML = '<option value="">ALL GAMES</option>' + [...new Set(PRODUCTS.map((p) => p.game))].map((g) => `<option>${g}</option>`).join('');
     $('#fGame').addEventListener('change', (e) => { st.game = e.target.value; render(); });
     $('#fPlat').addEventListener('change', (e) => { st.plat = e.target.value; render(); });
     $('#fSearch').addEventListener('input', (e) => { st.q = e.target.value.toLowerCase(); render(); });
@@ -343,24 +344,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- FEEDBACKS ----
   if ($('#fbList')) {
     let rate = 5, img = null, imgName = '';
-    $('#fbWho').textContent = S.email;
-    const paint = () => $$('#rateStars i').forEach((x, i) => x.classList.toggle('on', i < rate));
+    const LBL = ['', 'POOR', 'FAIR', 'GOOD', 'GREAT', 'AMAZING!'];
+    $('#fbWho').textContent = S.email; $('#fbAv').textContent = (S.email || 'GU').slice(0, 2).toUpperCase();
+    const paint = () => { $$('#rateStars i').forEach((x, i) => x.classList.toggle('on', i < rate)); $('#rateLbl').textContent = LBL[rate]; };
     $('#rateStars').addEventListener('click', (e) => { const i = e.target.closest('i[data-n]'); if (i) { rate = +i.dataset.n; paint(); } }); paint();
+    $('#fbText').addEventListener('input', (e) => { $('#fbCnt').textContent = e.target.value.length + '/400'; });
     const chip = () => { $('#fbChip').hidden = !img; $('#fbChip').innerHTML = img ? `<i class="fas fa-image"></i> ${escH(imgName)} <button type="button" id="fbRm">✕</button>` : ''; };
     $('#fbAttach').addEventListener('click', pickImg((d, n) => { img = d; imgName = n; chip(); }));
     $('#fbChip').addEventListener('click', (e) => { if (e.target.id === 'fbRm') { img = null; chip(); } });
+    const ago = (ts) => { const m = Math.max(1, Math.round((Date.now() - ts) / 60000)); return m < 60 ? m + 'M AGO' : m < 1440 ? Math.round(m / 60) + 'H AGO' : Math.round(m / 1440) + 'D AGO'; };
     const load = async () => {
       const j = await api('fbs', { quiet: true }); if (!j.ok) return;
-      $('#fbAvg').textContent = j.fbs.length ? `${j.avg.toFixed(1)} ★ · ${j.fbs.length} feedback${j.fbs.length > 1 ? 's' : ''}` : 'Be the first to rate';
-      $('#fbList').innerHTML = j.fbs.length ? j.fbs.map((f, i) => `<div class="order-card fb-card" style="animation-delay:${i * 60}ms"><div class="order-top"><h3 class="fb-mail">${escH(f.email)}</h3><span class="fb-stars">${stars(f.stars)}</span></div><p class="fb-text">${escH(f.text)}</p>${f.img ? `<img class="thumb" data-img src="${f.img}" alt="feedback">` : ''}<small class="fb-time">${fmtTime(f.ts)}</small></div>`).join('') : `<div class="empty-state"><i class="fas fa-star"></i><p>No feedbacks yet.</p></div>`;
+      const n = j.fbs.length;
+      $('#fbAvgNum').textContent = n ? j.avg.toFixed(1) : '0.0'; $('#fbAvgStars').textContent = stars(Math.round(j.avg || 0)); $('#fbCount').textContent = n ? `${n} REVIEW${n > 1 ? 'S' : ''}` : 'BE THE FIRST TO RATE';
+      $('#fbBars').innerHTML = [5, 4, 3, 2, 1].map((s) => { const k = j.fbs.filter((f) => f.stars === s).length; return `<div><span>${s} ★</span><div class="bar"><i style="width:${n ? (k / n) * 100 : 0}%"></i></div><small>${k}</small></div>`; }).join('');
+      $('#fbList').innerHTML = n ? j.fbs.map((f, i) => `<article class="fb-item" style="animation-delay:${Math.min(i, 8) * 50}ms">
+        <div class="fb-top"><div class="fb-av">${escH((f.email || '?').slice(0, 2).toUpperCase())}</div><div class="fb-who"><b class="fb-mail">${escH(f.email)}</b><small>${ago(f.ts)}</small></div><span class="fb-stars">${stars(f.stars)}</span></div>
+        <p class="fb-text">${escH(f.text)}</p>${f.img ? `<img class="thumb" data-img src="${f.img}" alt="feedback">` : ''}</article>`).join('') : `<div class="empty-state"><i class="fas fa-star"></i><p>NO FEEDBACKS YET.</p></div>`;
     };
     $('#fbSend').addEventListener('click', async () => {
       const btn = $('#fbSend'); btn.disabled = true;
       const j = await api('fbsend', { stars: rate, text: $('#fbText').value, img }); btn.disabled = false;
       if (!j.ok) return toast(j.err);
-      $('#fbText').value = ''; img = null; chip(); toast('Thank you for your feedback! ⭐'); load();
+      $('#fbText').value = ''; $('#fbCnt').textContent = '0/400'; img = null; chip(); toast('Thank you for your feedback! ⭐'); load();
     });
-    setInterval(load, 15000); load();
+    setInterval(load, 20000); load();
   }
 
   // ---- DONE BUY (history transaction) ----
@@ -370,9 +378,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       ...d.purchases.map((p) => ({ t: p.ts, buy: p }))].sort((a, b) => b.t - a.t);
     $('#doneList').innerHTML = rows.length ? rows.map((r, i) => r.buy ? `
       <div class="hist-item buy-hist" style="animation-delay:${i * 70}ms">
-        <img class="hist-apk" src="${ASSET.icon}" alt="" onerror="this.style.visibility='hidden'">
+        <img class="hist-apk" src="${prodOf(r.buy.product).img}" alt="" onerror="this.style.visibility='hidden'">
         <div class="hist-info"><h3>${escH(r.buy.product)}</h3><p>EXPIRATION: ${escH(r.buy.plan)}</p><p>AMOUNT: ₱${(+r.buy.pts).toLocaleString()}.00</p><p class="hist-id">${r.buy.id} · ${fmtDate(r.buy.ts)}</p></div>
-        <div class="hist-actions"><button class="mini-btn" data-dl><i class="fas fa-download"></i> DOWNLOAD APK</button><button class="mini-btn alt" data-share="${r.buy.id}"><i class="fas fa-share-nodes"></i> SHARE APK TO ADMIN</button></div>
+        <div class="hist-actions"><button class="mini-btn" data-dl><i class="fas fa-download"></i> DOWNLOAD APK</button><button class="mini-btn alt" data-share="${r.buy.id}" data-prod="${escH(r.buy.product)}"><i class="fas fa-share-nodes"></i> SHARE APK TO ADMIN</button></div>
       </div>` : `
       <div class="hist-item" style="animation-delay:${i * 70}ms">
         <div class="menu-icon blue-icon"><i class="fas fa-check-circle"></i></div>
@@ -388,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => { dl.classList.remove('downloading'); dl.innerHTML = '<i class="fas fa-check"></i> DOWNLOAD STARTED'; }, 1600);
       }
       if (sh) {
-        sh.disabled = true; const j = await api('csend', { share: sh.dataset.share, icon: location.origin + ASSET.icon }); sh.disabled = false;
+        sh.disabled = true; const j = await api('csend', { share: sh.dataset.share, icon: location.origin + prodOf(sh.dataset.prod).img }); sh.disabled = false;
         if (!j.ok) return toast(j.err);
         sh.innerHTML = '<i class="fas fa-check"></i> SENT TO ADMIN'; sh.classList.add('sent'); toast('SENT TO ADMIN ✅ - CHECK SUPPORT CENTER FOR YOUR LICENCE.');
       }
