@@ -12,24 +12,28 @@
 <script src="../SCRIPTJS/script.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <header class="shop-header">
-    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>Feedbacks</h1>
-    <p>See what other users say</p>
-  </header>
-  <div class="panel-card chat-panel">
-    <div class="chat-top"><span class="vip-badge"><span class="dot"></span> ONLINE FEEDBACKS</span><small id="fbAvg"></small></div>
-    <div class="kv"><b>GMAIL:</b><span id="fbWho" style="word-break:break-all"></span></div>
-    <div class="kv"><b>RATE:</b><span class="rate-stars" id="rateStars"><i data-n="1">★</i><i data-n="2">★</i><i data-n="3">★</i><i data-n="4">★</i><i data-n="5">★</i></span></div>
-    <div class="field-box ta" style="margin-top:14px"><textarea id="fbText" maxlength="400" placeholder="Say your feedback…"></textarea></div>
+<main class="wrap fb-wrap">
+  <h2 class="page-h"><i class="fas fa-star"></i> FEEDBACKS</h2>
+  <p class="page-sub">SEE WHAT OTHER USERS SAY ABOUT ARCHESZ</p>
+
+  <section class="fb-summary reveal">
+    <div class="fb-score"><b id="fbAvgNum">0.0</b><div class="fb-starsbig" id="fbAvgStars">☆☆☆☆☆</div><small id="fbCount"></small></div>
+    <div class="fb-bars" id="fbBars"></div>
+  </section>
+
+  <section class="fb-write reveal">
+    <div class="fb-wh"><div class="fb-av" id="fbAv">GU</div><div><small>WRITE A REVIEW AS</small><b class="fb-mail" id="fbWho"></b></div></div>
+    <div class="rate-row"><span class="rate-stars" id="rateStars"><i data-n="1">★</i><i data-n="2">★</i><i data-n="3">★</i><i data-n="4">★</i><i data-n="5">★</i></span><em id="rateLbl">AMAZING!</em></div>
+    <div class="fb-ta"><textarea id="fbText" maxlength="400" placeholder="Say your feedback…"></textarea><small id="fbCnt">0/400</small></div>
     <div class="attach-chip" id="fbChip" hidden></div>
-    <div class="chat-input">
+    <div class="fb-actions">
       <button type="button" class="icon-btn" id="fbAttach" title="Add image"><i class="fas fa-image"></i></button>
-      <button type="button" class="btn btn-purple full-btn" id="fbSend" style="flex:1"><i class="fas fa-paper-plane"></i> SEND</button>
+      <button type="button" class="btn btn-purple" id="fbSend"><i class="fas fa-paper-plane"></i> SEND FEEDBACK</button>
     </div>
-  </div>
+  </section>
+
+  <h3 class="fb-h"><i class="step-dot"></i> RECENT REVIEWS</h3>
   <div id="fbList"></div>
-</div>
+</main>
 </body>
 </html>
