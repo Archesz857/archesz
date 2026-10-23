@@ -5,7 +5,10 @@ const crypto = require('crypto');
 const URL_ = process.env.archesz_KV_REST_API_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL, TOK_ = process.env.archesz_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const REF = process.env.REFERRAL_CODE || '3142020', ADMIN = process.env.ADMIN_PASSWORD || 'archesz';
 // Prices live HERE (server) so users cannot cheat. Keep in sync with PRODUCTS in SCRIPTJS/script.js
-const PLANS = { 'archesz-v1': { name: 'ARCHESZ V1', plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]] } };
+const PLANS = {
+  'archesz-v1': { name: 'ARCHESZ INJECTOR', plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]] },
+  'archesz-v2': { name: 'ARCHESZ INTERNAL', plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 1,500]] },
+};
 
 const rd = async (...c) => { const r = await fetch(URL_, { method: 'POST', headers: { Authorization: 'Bearer ' + TOK_ }, body: JSON.stringify(c) }); const j = await r.json(); if (j.error) throw new Error(j.error); return j.result; };
 const hget = async (h, k) => { const v = await rd('HGET', h, k); return v ? JSON.parse(v) : null; };
