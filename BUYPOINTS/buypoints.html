@@ -40,11 +40,12 @@
     </div>
 
     <h2 class="tu-title tu-sub"><i class="fas fa-upload"></i> UPLOAD PROOF (JPG OR PNG)</h2>
-    <div class="upload-area">
+    <label class="upload-area" id="proofArea" for="proofIn">
       <i class="fas fa-image upload-icon"></i>
       <p>TAP TO UPLOAD YOUR GCASH PAYMENT PROOF</p>
-      <small>JPG OR PNG ONLY · UP TO 5MB</small>
-    </div>
+      <small>JPG OR PNG · UP TO 5MB</small>
+    </label>
+    <input id="proofIn" class="file-off" type="file" accept="image/*">
 
     <button class="btn btn-purple full-btn" id="tuSubmit"><i class="fas fa-paper-plane"></i> SUBMIT</button>
   </div>
