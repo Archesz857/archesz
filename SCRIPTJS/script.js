@@ -26,12 +26,12 @@ const PRODUCTS = [
   plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 100]]
 },
 {
-  id: 'archesz-v2', name: 'ARCHESZ V2', title: 'ARCHESZ V2', version: 'V2', img: '/ASSETS/shop-02.png', platform: 'Android', type: 'MOD APK',
+  id: 'archesz-v2', name: 'ARCHESZ MLBB', title: 'ARCHESZ MLBB', version: 'V58', img: '/ASSETS/shop-02.png', platform: 'Android', type: 'MOD APK',
   game: 'MOBILE LEGENDS ANDROID', banner: '/ASSETS/shot-2.jpg', shots: ['/ASSETS/shot-2.jpg', '/ASSETS/shot-3.jpg', '/ASSETS/shot-1.jpg'],
-  tags: ['MLBB', 'LATEST VERSION', 'ARCHESZ V2'],
+  tags: ['MLBB', 'LATEST VERSION', 'ARCHESZ V58'],
   short: 'MOD APK TO VIRTUAL APK. SMOOTH, STABLE AND EASY TO INSTALL ON ANDROID.',
   desc: 'ARCHESZ V2 - MOD APK TO VIRTUAL APK\nANDROID - MOBILE LEGENDS\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
-  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
+  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 1,500]]
 }
 ];
 const money = (n) => '₱' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2 });
