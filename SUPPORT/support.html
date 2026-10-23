@@ -11,25 +11,23 @@
 <script src="../SCRIPTJS/script.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <header class="shop-header">
-    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>Support Center</h1>
-    <p>Chat with our team about your order</p>
-  </header>
-  <div class="panel-card chat-panel">
-    <div class="chat-top"><span class="vip-badge"><span class="dot"></span> LIVE ADMIN</span><small id="who"></small></div>
-    <p class="warn-note" id="regHint" hidden>You are not registered yet. <a href="../AUTH/login.html" style="color:#22d3ee">Register</a> so admin can see your Gmail.</p>
-    <p class="field-label" style="color:#fff;font-weight:600;font-size:16px;margin-bottom:10px">What is your problem about order?</p>
+<main class="wrap sup-wrap">
+  <h2 class="page-h"><i class="fas fa-headset"></i> SUPPORT CENTER</h2>
+  <p class="page-sub">CHAT WITH OUR TEAM ABOUT YOUR ORDER</p>
+  <section class="chat-shell">
+    <div class="chat-head"><img src="/ASSETS/homepage-icon.png" alt="" onerror="this.style.display='none'"><div><b>ARCHESZ ADMIN</b><small><i class="dot-s on"></i> ONLINE · REPLIES IN MINUTES</small></div></div>
+    <p class="warn-note" id="regHint" hidden>You are not registered yet. <a href="../AUTH/login.html">Register</a> so admin can see your Gmail.</p>
+    <div class="chat-meta"><small>CHATTING AS</small><b id="who" class="keep-case"></b></div>
+    <label class="field-label" for="orderSel">ABOUT ORDER</label>
     <select id="orderSel" class="sel"></select>
     <div class="chat-box" id="chatBox"></div>
     <div class="attach-chip" id="attachChip" hidden></div>
     <div class="chat-input">
       <button type="button" class="icon-btn" id="attachBtn" title="Send image"><i class="fas fa-image"></i></button>
       <div class="field-box"><input id="msgIn" type="text" placeholder="Type your message…" autocomplete="off"></div>
-      <button type="button" class="btn btn-purple" id="sendBtn"><i class="fas fa-paper-plane"></i> SEND</button>
+      <button type="button" class="btn btn-purple send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
     </div>
-  </div>
-</div>
+  </section>
+</main>
 </body>
 </html>
