@@ -11,20 +11,20 @@
 <script src="../SCRIPTJS/script.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <header class="shop-header">
-    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>My Wallet</h1>
-    <p>Your wallet balance and top-up history</p>
-  </header>
-  <div class="hero-card bal-card">
-    <p class="bal-label">Wallet Balance</p>
-    <div class="bal-num"><small>₱</small><span id="bal">0</span></div>
-    <div class="hero-btns"><a href="../BUYPOINTS/buypoints.html" class="btn btn-purple"><i class="fas fa-plus"></i> Add Funds</a><a href="../DONEBUY/donebuy.html" class="btn btn-dark">TRANSACTIONS</a></div>
+<main class="wrap">
+  <h2 class="page-h"><i class="fas fa-wallet"></i> MY WALLET</h2>
+  <p class="page-sub">YOUR WALLET BALANCE AND TOP-UP HISTORY</p>
+  <section class="wal-hero">
+    <div class="w-ico"><i class="fas fa-wallet"></i></div>
+    <small>WALLET BALANCE</small>
+    <div class="wal-bal"><span>₱</span><b id="bal">0</b></div>
+    <div class="wal-btns"><a href="../BUYPOINTS/buypoints.html" class="btn btn-purple"><i class="fas fa-circle-plus"></i> ADD FUNDS</a><a href="../DONEBUY/donebuy.html" class="btn btn-dark"><i class="fas fa-circle-check"></i> DONE BUY</a></div>
+  </section>
+  <div class="mini-stats three"><div class="warn"><i class="fas fa-clock"></i><b id="wPend">₱0</b><small>PENDING</small></div><div class="ok"><i class="fas fa-circle-check"></i><b id="wOk">₱0</b><small>APPROVED</small></div><div class="bad"><i class="fas fa-circle-xmark"></i><b id="wBad">0</b><small>CANCELLED</small></div></div>
+  <div class="chip-row" id="histTabs">
+    <button class="chip active" data-f="all">ALL <em id="c-all">0</em></button><button class="chip" data-f="pending">PENDING <em id="c-pending">0</em></button><button class="chip" data-f="approved">APPROVED <em id="c-approved">0</em></button><button class="chip" data-f="cancelled">CANCELLED <em id="c-cancelled">0</em></button>
   </div>
-  <div class="filter-btns" id="histTabs"><button class="filter-btn active" data-f="all">All</button><button class="filter-btn" data-f="pending">Pending</button><button class="filter-btn" data-f="approved">Approved</button></div>
-  <div class="hist-list" id="histList"></div>
-  <button class="link-btn" id="resetDemo"><i class="fas fa-rotate-left"></i> Reset demo data</button>
-</div>
+  <div id="histList"></div>
+</main>
 </body>
 </html>
