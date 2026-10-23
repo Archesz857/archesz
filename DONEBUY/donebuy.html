@@ -11,13 +11,12 @@
 <script src="../SCRIPTJS/script.js" defer></script>
 </head>
 <body>
-<div class="container">
-  <header class="shop-header">
-    <a href="../HOMEPAGE/index.html" class="back-btn"><i class="fas fa-times"></i></a>
-    <h1>HISTORY TRANSACTION</h1>
-    <p>View Your Order Complete</p>
-  </header>
-  <div class="hist-list" id="doneList"></div>
-</div>
+<main class="wrap">
+  <h2 class="page-h"><i class="fas fa-circle-check"></i> DONE BUY</h2>
+  <p class="page-sub">YOUR COMPLETED ORDERS, DOWNLOADS AND LICENCE REQUESTS</p>
+  <div class="mini-stats"><div><i class="fas fa-bag-shopping"></i><b id="dbCount">0</b><small>ORDERS</small></div><div><i class="fas fa-wallet"></i><b id="dbSpent">₱0</b><small>TOTAL SPENT</small></div></div>
+  <div class="chip-row" id="dbTabs"><button class="chip active" data-f="all">ALL</button><button class="chip" data-f="buy">PURCHASES</button><button class="chip" data-f="top">TOP-UPS</button></div>
+  <div id="doneList"></div>
+</main>
 </body>
 </html>
