@@ -18,12 +18,12 @@ function uploadReceiptDemo(file, max = 720) {
 const ASSET = { bg: '/ASSETS/shop-bg.jpg', icon: '/ASSETS/shop-01.png', done: '/ASSETS/done-icon.png', video: '/ASSETS/buy-video.mp4', store: '/ASSETS/store.mp4', gcash: '/ASSETS/gcash.png', logo: '/ASSETS/homepage-icon.png', login: '/ASSETS/login.png' };
 const PRODUCTS = [
 {
-  id: 'archesz-v1', name: 'ARCHESZ V1', title: 'ARCHESZ V1', version: 'V1', img: '/ASSETS/shop-01.png', platform: 'Android', type: 'MOD APK',
+  id: 'archesz-v1', name: 'ARCHESZ INJECTOR', title: 'ARCHESZ INJECTOR', version: 'V1.57', img: '/ASSETS/shop-01.png', platform: 'Android', type: 'MOD APK',
   game: 'CALL OF DUTY ANDROID', banner: '/ASSETS/shot-1.jpg', shots: ['/ASSETS/shot-1.jpg', '/ASSETS/shot-2.jpg', '/ASSETS/shot-3.jpg'],
   tags: ['GARENA', 'LATEST VERSION', 'ARCHESZ V1'],
   short: 'MOD APK TO VIRTUAL APK. PREMIUM MOD EXPERIENCE BUILT WITH PERFORMANCE AND RELIABILITY IN MIND.',
-  desc: 'ARCHESZ V1 - MOD APK TO VIRTUAL APK\nANDROID - GARENA\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
-  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 500]]
+  desc: 'ARCHESZ INJECTOR - MOD APK TO VIRTUAL APK\nANDROID - GARENA\nLATEST VERSION\nCHOOSE YOUR METHOD TO PURCHASE INSTANTLY. ARCHESZ INC.\nAFTER PURCHASE, OPEN DONE BUY TO DOWNLOAD YOUR APK AND SHARE YOUR ORDER TO ADMIN FOR YOUR LICENCE.',
+  plans: [['01 DAYS', 50], ['03 DAYS', 100], ['07 DAYS', 200], ['30 DAYS', 350], ['PERMANENT', 100]]
 },
 {
   id: 'archesz-v2', name: 'ARCHESZ V2', title: 'ARCHESZ V2', version: 'V2', img: '/ASSETS/shop-02.png', platform: 'Android', type: 'MOD APK',
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('#sbClose').addEventListener('click', () => setSb(false)); ov.addEventListener('click', () => setSb(false));
     addEventListener('keydown', (e) => e.key === 'Escape' && setSb(false));
     $('#logoutBtn').addEventListener('click', () => { localStorage.removeItem(TOK); location.href = '/AUTH/login.html'; });
-    setInterval(() => api('ping', { quiet: true }), 30000);
+    setInterval(() => !document.hidden && api('ping', { quiet: true }), 30000);
     if (!location.pathname.includes('SUPPORT')) { const f = document.createElement('a'); f.className = 'fab-chat'; f.href = '/SUPPORT/support.html'; f.innerHTML = '<i class="fas fa-comment-dots"></i>'; f.title = 'Support'; document.body.appendChild(f); }
   }
   // play videos only while visible (saves battery / lag)
@@ -260,19 +260,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (tuAmt && document.body.dataset.role !== 'admin') {
     let amt = 50, proof = null, proofName = '';
     $$('.tu-chip').forEach((b) => b.addEventListener('click', () => { amt = +b.dataset.a; tuAmt.value = amt.toLocaleString(); $$('.tu-chip').forEach((x) => x.classList.toggle('active', x === b)); }));
-    const area = $('.upload-area'), picker = document.createElement('input');
-    picker.type = 'file'; picker.accept = '.jpg,.jpeg,.png,image/jpeg,image/png'; picker.hidden = true; document.body.appendChild(picker);
-    area.addEventListener('click', () => picker.click());
+    const area = $('#proofArea'), picker = $('#proofIn'), DEF = area.innerHTML;
     picker.addEventListener('change', async () => {
-      const f = picker.files[0]; if (!f) return;
-      if (!/^image\/(jpeg|png)$/.test(f.type)) { picker.value = ''; return alert('Proof must be a JPG or PNG image.'); }
-      if (f.size > 5 * 1024 * 1024) return alert('Max file size is 5MB.');
-      area.innerHTML = `<i class="fas fa-spinner fa-spin upload-icon"></i><p>UPLOADING…</p>`;
-      try { proof = await uploadReceiptDemo(f); proofName = f.name; } catch { proof = null; return alert('Could not read that image.'); }
-      area.innerHTML = `<i class="fas fa-circle-check upload-icon"></i><p>${escH(f.name)}</p><img src="${URL.createObjectURL(f)}" alt="Payment proof preview">`;
+      const f = picker.files && picker.files[0]; if (!f) return;
+      if (f.size > 12 * 1024 * 1024) { picker.value = ''; return toast('IMAGE IS TOO BIG (MAX 12MB).'); }
+      area.classList.remove('need'); area.innerHTML = `<i class="fas fa-spinner fa-spin upload-icon"></i><p>UPLOADING…</p>`;
+      try { proof = await uploadReceiptDemo(f); proofName = f.name || 'proof.jpg'; }
+      catch { proof = null; area.innerHTML = DEF; picker.value = ''; return toast('COULD NOT READ THAT IMAGE. PLEASE CHOOSE A JPG OR PNG.'); }
+      area.innerHTML = `<i class="fas fa-circle-check upload-icon"></i><p>${escH(proofName)}</p><img src="${proof}" alt="Payment proof preview"><small>TAP TO CHANGE</small>`;
+      picker.value = '';
     });
     $('#tuSubmit').addEventListener('click', async (e) => {
-      const btn = e.currentTarget; if (!proof) { area.classList.add('need'); area.scrollIntoView({ behavior: 'smooth', block: 'center' }); return toast('UPLOAD YOUR PROOF (JPG OR PNG) FIRST.'); }
+      const btn = e.currentTarget; if (!proof) { area.classList.add('need'); area.scrollIntoView({ behavior: 'smooth', block: 'center' }); return toast('UPLOAD YOUR PAYMENT PROOF FIRST.'); }
       btn.disabled = true; const j = await api('order', { pts: amt, name: proofName, receipt: proof }); btn.disabled = false;
       if (!j.ok) return alert(j.err);
       toast('REQUEST SENT! FUNDS WILL BE ADDED TO YOUR WALLET AFTER ADMIN REVIEW.'); setTimeout(() => go('../MYPOINTS/mypoints.html'), 1300);
@@ -288,22 +287,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     hero.addEventListener('mouseleave', () => (hero.style.transform = ''));
   }
 
-  // ---- MY POINTS ----
+  // ---- MY WALLET ----
   if ($('#histList')) {
     let f = 'all';
+    const META = { approved: ['ok', 'fa-circle-check'], pending: ['warn', 'fa-clock'], cancelled: ['bad', 'fa-circle-xmark'] };
     const render = () => {
-      const d = loadDB(), list = $('#histList');
-      countUp($('#bal'), d.balance);
-      const rows = d.history.filter((h) => f === 'all' || h.status === f);
-      list.innerHTML = rows.length ? rows.map((h, i) => `
-        <div class="hist-item" style="animation-delay:${i * 70}ms">
-          <div class="menu-icon ${{ approved: 'green-icon', cancelled: 'red-icon' }[h.status] || 'gold-icon'}"><i class="fas ${{ approved: 'fa-circle-check', cancelled: 'fa-circle-xmark' }[h.status] || 'fa-clock'}"></i></div>
-          <div class="hist-info"><h3>${h.manual ? 'Added by admin' : 'Top-up via GCash'}</h3><p>${h.id} · ${fmtDate(h.ts)}</p></div>
-          <div class="hist-right"><span class="hist-pts">+₱${h.pts.toLocaleString()}</span><span class="pill ${h.status}">${h.status}</span></div>
-        </div>`).join('') : `<div class="empty-state"><i class="fas fa-inbox"></i><p>No ${f === 'all' ? '' : f + ' '}history yet.<br>Add funds to get started.</p></div>`;
+      const d = loadDB(), H = d.history, sum = (s) => H.filter((h) => h.status === s).reduce((a, h) => a + h.pts, 0), cnt = (s) => H.filter((h) => h.status === s).length;
+      countUp($('#bal'), d.balance); $('#wPend').textContent = money(sum('pending')); $('#wOk').textContent = money(sum('approved')); $('#wBad').textContent = cnt('cancelled');
+      $('#c-all').textContent = H.length; ['pending', 'approved', 'cancelled'].forEach((k) => ($('#c-' + k).textContent = cnt(k)));
+      const rows = H.filter((h) => f === 'all' || h.status === f);
+      $('#histList').innerHTML = rows.length ? rows.map((h, i) => { const m = META[h.status] || META.pending; return `
+        <article class="wrow ${m[0]}" style="animation-delay:${Math.min(i, 8) * 60}ms">
+          <div class="wr-ico"><i class="fas ${m[1]}"></i></div>
+          <div class="wr-ti"><b>${h.manual ? 'ADDED BY ADMIN' : 'TOP-UP VIA GCASH'}</b><small>${h.id} · ${fmtDate(h.ts)}</small></div>
+          <div class="wr-r"><b>+₱${h.pts.toLocaleString()}</b><span class="st st-${m[0]}">${h.status}</span></div>
+        </article>`; }).join('') : `<div class="empty-state"><i class="fas fa-inbox"></i><p>NO ${f === 'all' ? '' : f.toUpperCase() + ' '}HISTORY YET.<br>ADD FUNDS TO GET STARTED.</p></div>`;
     };
-    $$('#histTabs .filter-btn').forEach((b) => b.addEventListener('click', () => { f = b.dataset.f; render(); }));
-    $('#resetDemo')?.remove();
+    $('#histTabs').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; f = b.dataset.f; $$('#histTabs .chip').forEach((x) => x.classList.toggle('active', x === b)); render(); });
     render();
   }
 
@@ -312,13 +312,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (spSub && S.unread) spSub.textContent = S.unread + ' new reply from admin';
 
   // ---- SUPPORT CENTER (user side) ----
-  const pickImg = (cb) => { const pk = document.createElement('input'); pk.type = 'file'; pk.accept = 'image/png,image/jpeg'; pk.hidden = true; document.body.appendChild(pk);
-    pk.addEventListener('change', async () => { const f = pk.files[0]; pk.value = ''; if (!f) return; if (f.size > 5 * 1024 * 1024) return alert('Max file size is 5MB.');
-      try { cb(await uploadReceiptDemo(f), f.name); } catch { alert('Could not read that image.'); } }); return () => pk.click(); };
+  const pickImg = (cb) => { const pk = document.createElement('input'); pk.type = 'file'; pk.accept = 'image/*'; pk.className = 'file-off'; document.body.appendChild(pk);
+    pk.addEventListener('change', async () => { const f = pk.files && pk.files[0]; pk.value = ''; if (!f) return; if (f.size > 12 * 1024 * 1024) return toast('IMAGE IS TOO BIG (MAX 12MB).');
+      try { cb(await uploadReceiptDemo(f), f.name || 'image.jpg'); } catch { toast('COULD NOT READ THAT IMAGE. PLEASE CHOOSE A JPG OR PNG.'); } }); return () => pk.click(); };
   if ($('#chatBox')) {
     let img = null, imgName = '', sig = '';
-    $('#who').innerHTML = `${escH(S.email)} • <span class="on-txt"><i class="on-dot"></i>Online</span>`;
-    const sel = $('#orderSel'), orders = [...S.orders.filter((h) => !h.manual).map((h) => ({ id: h.id, ts: h.ts, label: `${h.id} - ${h.pts} pts top-up (${h.status})` })), ...S.purchases.map((p) => ({ id: p.id, ts: p.ts, label: `${p.id} - ${p.product} ${p.plan}` }))].sort((a, b) => b.ts - a.ts);
+    $('#who').textContent = S.email;
+    const sel = $('#orderSel'), orders = [...S.orders.filter((h) => !h.manual).map((h) => ({ id: h.id, ts: h.ts, label: `${h.id} - ₱${h.pts} top-up (${h.status})` })), ...S.purchases.map((p) => ({ id: p.id, ts: p.ts, label: `${p.id} - ${p.product} ${p.plan}` }))].sort((a, b) => b.ts - a.ts);
     sel.innerHTML = `<option value="">No specific order</option>` + orders.map((o, i) => `<option value="${i}"${i ? '' : ' selected'}>${escH(o.label)}</option>`).join('');
     const render = async (force) => {
       const j = await api('chat', { quiet: true }); if (!j.ok) return;
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     $('#sendBtn').addEventListener('click', send);
     $('#msgIn').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
-    setInterval(render, 5000); render(true);
+    setInterval(() => !document.hidden && render(), 5000); render(true);
   }
 
   // ---- FEEDBACKS ----
@@ -368,25 +368,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!j.ok) return toast(j.err);
       $('#fbText').value = ''; $('#fbCnt').textContent = '0/400'; img = null; chip(); toast('Thank you for your feedback! ⭐'); load();
     });
-    setInterval(load, 20000); load();
+    setInterval(() => !document.hidden && load(), 20000); load();
   }
 
   // ---- DONE BUY (history transaction) ----
   if ($('#doneList')) {
-    const d = loadDB(), ok = /^https?:\/\//i.test(APK_LINK);
-    const rows = [...d.history.filter((h) => h.status === 'approved').map((h) => ({ t: h.approvedAt || h.ts, topup: h })),
-      ...d.purchases.map((p) => ({ t: p.ts, buy: p }))].sort((a, b) => b.t - a.t);
-    $('#doneList').innerHTML = rows.length ? rows.map((r, i) => r.buy ? `
-      <div class="hist-item buy-hist" style="animation-delay:${i * 70}ms">
-        <img class="hist-apk" src="${prodOf(r.buy.product).img}" alt="" onerror="this.style.visibility='hidden'">
-        <div class="hist-info"><h3>${escH(r.buy.product)}</h3><p>EXPIRATION: ${escH(r.buy.plan)}</p><p>AMOUNT: ₱${(+r.buy.pts).toLocaleString()}.00</p><p class="hist-id">${r.buy.id} · ${fmtDate(r.buy.ts)}</p></div>
-        <div class="hist-actions"><button class="mini-btn" data-dl><i class="fas fa-download"></i> DOWNLOAD APK</button><button class="mini-btn alt" data-share="${r.buy.id}" data-prod="${escH(r.buy.product)}"><i class="fas fa-share-nodes"></i> SHARE APK TO ADMIN</button></div>
-      </div>` : `
-      <div class="hist-item" style="animation-delay:${i * 70}ms">
-        <div class="menu-icon blue-icon"><i class="fas fa-check-circle"></i></div>
-        <div class="hist-info"><h3>₱${r.topup.pts.toLocaleString()} TOP-UP</h3><p>ORDER ${r.topup.id} · ${fmtDate(r.topup.approvedAt || r.topup.ts)}</p></div>
-        <div class="hist-right"><span class="pill approved">completed</span></div>
-      </div>`).join('') : `<div class="empty-state"><i class="fas fa-box-open"></i><p>NO COMPLETED ORDERS YET.<br>APPROVED PURCHASES SHOW UP HERE.</p></div>`;
+    const d = loadDB(), ok = /^https?:\/\//i.test(APK_LINK); let f = 'all';
+    const DAY = 864e5, mdy = (ts) => new Date(ts).toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+    const all = [...d.history.filter((h) => h.status === 'approved').map((h) => ({ t: h.approvedAt || h.ts, topup: h })), ...d.purchases.map((p) => ({ t: p.ts, buy: p }))].sort((a, b) => b.t - a.t);
+    $('#dbCount').textContent = d.purchases.length; $('#dbSpent').textContent = money(d.purchases.reduce((a, p) => a + (+p.pts || 0), 0));
+    const life = (pl) => /PERMANENT/i.test(pl), days = (pl) => parseInt(pl) || 0;
+    const draw = () => {
+      const rows = all.filter((r) => f === 'all' || (f === 'buy' ? r.buy : r.topup));
+      $('#doneList').innerHTML = rows.length ? rows.map((r, i) => { const dl = `style="animation-delay:${Math.min(i, 8) * 60}ms"`;
+        if (r.buy) { const p = r.buy, pr = prodOf(p.product), exp = p.ts + days(p.plan) * DAY, left = Math.ceil((exp - Date.now()) / DAY), lf = life(p.plan);
+          const st = lf ? ['ok', 'LIFETIME'] : left <= 0 ? ['bad', 'EXPIRED'] : left <= 3 ? ['warn', 'EXPIRING'] : ['ok', 'ACTIVE'];
+          return `<article class="dcard" ${dl}>
+            <div class="dc-top"><img class="dc-pic" src="${pr.img}" alt="" onerror="this.style.visibility='hidden'"><div class="dc-ti"><h3>${escH(p.product)}</h3><small>${p.id} · ${mdy(p.ts)}</small></div><span class="st st-${st[0]}">${st[1]}</span></div>
+            <div class="dc-grid"><div><small>PLAN</small><b>${escH(p.plan)}</b></div><div><small>AMOUNT</small><b>₱${(+p.pts).toLocaleString()}.00</b></div><div><small>EXPIRES</small><b>${lf ? 'NEVER' : mdy(exp)}</b></div><div><small>TIME LEFT</small><b>${lf ? 'LIFETIME' : left <= 0 ? 'EXPIRED' : left + ' DAY' + (left > 1 ? 'S' : '')}</b></div></div>
+            <div class="dc-act"><button class="mini-btn" data-dl><i class="fas fa-download"></i> DOWNLOAD APK</button><button class="mini-btn alt" data-share="${p.id}" data-prod="${escH(p.product)}"><i class="fas fa-share-nodes"></i> SHARE APK TO ADMIN</button></div>
+          </article>`; }
+        const h = r.topup; return `<article class="dcard top" ${dl}>
+          <div class="dc-top"><div class="wr-ico ok"><i class="fas fa-circle-check"></i></div><div class="dc-ti"><h3>TOP-UP VIA GCASH</h3><small>${h.id} · ${mdy(h.approvedAt || h.ts)}</small></div><span class="st st-ok">COMPLETED</span></div>
+          <div class="dc-grid"><div><small>AMOUNT ADDED</small><b>+₱${h.pts.toLocaleString()}</b></div><div><small>STATUS</small><b>APPROVED</b></div></div></article>`; }).join('')
+        : `<div class="empty-state"><i class="fas fa-box-open"></i><p>NO ORDERS HERE YET.<br>APPROVED PURCHASES SHOW UP HERE.</p></div>`;
+    };
+    $('#dbTabs').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; f = b.dataset.f; $$('#dbTabs .chip').forEach((x) => x.classList.toggle('active', x === b)); draw(); });
+    draw();
     $('#doneList').addEventListener('click', async (e) => {
       const dl = e.target.closest('[data-dl]'), sh = e.target.closest('[data-share]');
       if (dl) {
@@ -398,7 +406,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (sh) {
         sh.disabled = true; const j = await api('csend', { share: sh.dataset.share, icon: location.origin + prodOf(sh.dataset.prod).img }); sh.disabled = false;
         if (!j.ok) return toast(j.err);
-        sh.innerHTML = '<i class="fas fa-check"></i> SENT TO ADMIN'; sh.classList.add('sent'); toast('SENT TO ADMIN ✅ - CHECK SUPPORT CENTER FOR YOUR LICENCE.');
+        sh.innerHTML = '<i class="fas fa-check"></i> SENT TO ADMIN'; sh.classList.add('sent'); toast('SENT TO ADMIN - CHECK SUPPORT CENTER FOR YOUR LICENCE.');
       }
     });
   }
@@ -409,7 +417,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (n) {
       const ok = n.status === 'approved';
       modal(`<div class="result-ico ${ok ? 'ok' : 'no'}"><i class="fas ${ok ? 'fa-circle-check' : 'fa-circle-xmark'}"></i></div>
-        <h2>${ok ? 'YOUR ORDER APPROVED✅' : 'YOUR ORDER CANCELLED❌'}</h2>
+        <h2>${ok ? 'YOUR ORDER APPROVED' : 'YOUR ORDER CANCELLED'}</h2>
         <p class="small-note">${ok ? `+₱${n.pts.toLocaleString()} added to your wallet` : `Order ${n.id} was cancelled`}</p>
         <p class="small-note">For more Inquiries: <b class="text-green">${CONTACT}</b></p>
         <button class="btn btn-purple full-btn" data-close>OK</button>`,
